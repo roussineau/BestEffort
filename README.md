@@ -13,10 +13,15 @@ La consigna se puede ver en este [enlace](https://campus.exactas.uba.ar/pluginfi
 `git add .`
 `git commit -m "Descripción de los cambios"`
 `git push origin main`
-7. Ir al [repositorio original](https://github.com/Roussineau/BestEffort) del que hicimos el fork y abrir una pull request.
+7. Ir al repositorio original del que hicimos el fork (este) y abrir una pull request.
 8. Mandar la pull y listo.
 ### Sincronizar los repos en caso de que el nuestro esté desactualizado
 1. `git fetch upstream`
 2. `git merge upstream/main`
 3. `git push origin main`
 4. Programar.
+### Pasar de local al remoto original
+1. `git add .`
+2. `git commit -m "Descripción de los cambios"`
+3. `git push origin main`
+4. Hacer una pull request al repo original (este).
