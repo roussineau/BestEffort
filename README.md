@@ -11,8 +11,8 @@ La consigna se puede ver [aquí](https://campus.exactas.uba.ar/pluginfile.php/58
 `git checkout nombre-de-la-rama`
 5. Hacer los cambios que tengamos que hacer, o sea, programar.
 6. Pasar todo al staging area, commitear y mandar al repositorio remoto:
-```git add .`
-`git commit -m "Descripción de los cambios"`
-`git push origin nombre-de-la-rama```
+```git add .```
+```git commit -m "Descripción de los cambios"```
+```git push origin nombre-de-la-rama```
 7. Ir al [repositorio original](https://github.com/Roussineau/BestEffort) del que hicimos el fork y abrir una pull request.
 8. Mandar la pull y listo.
