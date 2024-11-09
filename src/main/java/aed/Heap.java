@@ -8,7 +8,7 @@ public class Heap {
 
     public Heap() {
         this.elems = new ArrayList();
-        this.longitud = 0;
+        this.longitud = 1;
     }
 
     public Integer max() {
