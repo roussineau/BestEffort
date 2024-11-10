@@ -29,8 +29,8 @@ public class Heap<T> {
 
     // Constructor
     public Heap() {
-        this.elems = new ArrayList();
-        this.longitud = 0;
+        elems = new ArrayList();
+        longitud = 0;
     }
 
     // Devuelve la prioridad maxima (no el elemento) (asume que hay al menos 1
@@ -46,37 +46,70 @@ public class Heap<T> {
 
     // Dado un elemento, lo encola. El entero p sera el criterio que
     // usemos para encolar, o sea, ganancias, perdidas o antiguedad.
-    public void encolar(int p, T elem) {
-        Nodo nuevo = new Nodo(p, elem);
-        elems.add(nuevo);
-        if (longitud > 0) {
-            nuevo.padre = elems.get(longitud / 2);
-            if (elems.get((longitud / 2) * 2) != nuevo) { // Primero divide y trunca y luego multiplica por 2
-                nuevo.padre.der = nuevo;
+    public void encolar(int prior, T valor) {
+        Nodo nuevo = new Nodo(prior, valor);
+        if (longitud == 0) {
+            elems.add(nuevo);
+            longitud++;
+        } else {
+            elems.add(nuevo);
+            longitud++;
+            int posicionPadre = longitud / 2 - 1;
+            nuevo.padre = elems.get(posicionPadre);
+            if (elems.get(posicionPadre).izq == null) {
+                elems.get(posicionPadre).izq = nuevo;
             } else {
-                nuevo.padre.izq = nuevo;
+                elems.get(posicionPadre).der = nuevo;
             }
             heapifyUp(nuevo);
         }
-        longitud++;
+
     }
 
-    public void desencolar(int p, T elem) {
-
+    // Quitar el elemento de maxima prioridad
+    public T desencolar() {
+        Nodo ultimo = elems.get(longitud - 1);
+        Nodo raiz = elems.get(0);
+        int pUltimo = ultimo.prioridad;
+        int pRaiz = raiz.prioridad;
+        T vUltimo = ultimo.valor;
+        T vRaiz = raiz.valor;
+        if (longitud == 1) {
+            T ret = elems.remove(0).valor;
+            longitud--;
+            return ret;
+        } else {
+            elems.get(0).prioridad = pUltimo;
+            elems.get(0).valor = vUltimo;
+            elems.get(longitud - 1).prioridad = pRaiz;
+            elems.get(longitud - 1).valor = vRaiz;
+            if (elems.get(longitud - 1).padre.der == null) {
+                elems.get(longitud - 1).padre.izq = null;
+            } else {
+                elems.get(longitud - 1).padre.der = null;
+            }
+            elems.get(longitud - 1).padre = null;
+            T ret = elems.remove(longitud - 1).valor;
+            longitud--;
+            heapifyDown(elems.get(0));
+            return ret;
+        }
     }
 
     // Ingresado un nuevo elemento al array, lo ubica donde corresponde
     public void heapifyUp(Nodo n) {
-        int pPadre = n.padre.prioridad;
-        int pHijo = n.prioridad;
-        T vPadre = n.padre.valor;
-        T vHijo = n.valor;
-        if (pPadre < pHijo) {
-            n.padre.prioridad = pHijo;
-            n.prioridad = pPadre;
-            n.padre.valor = vHijo;
-            n.valor = vPadre;
-            heapifyUp(n);
+        if (n.padre != null) {
+            int pPadre = n.padre.prioridad;
+            int pHijo = n.prioridad;
+            T vPadre = n.padre.valor;
+            T vHijo = n.valor;
+            if (pPadre < pHijo) {
+                n.padre.prioridad = pHijo;
+                n.prioridad = pPadre;
+                n.padre.valor = vHijo;
+                n.valor = vPadre;
+                heapifyUp(n.padre);
+            }
         }
     }
 
@@ -94,15 +127,15 @@ public class Heap<T> {
                     n.valor = vIzq;
                     n.izq.prioridad = pPadre;
                     n.izq.valor = vPadre;
-                    heapifyDown(n);
-                } else {
-                    if (pDer > pPadre) {
-                        n.prioridad = pDer;
-                        n.valor = vDer;
-                        n.der.prioridad = pPadre;
-                        n.der.valor = vPadre;
-                        heapifyDown(n);
-                    }
+                    heapifyDown(n.izq);
+                } 
+            } else {
+                if (pDer > pPadre) {
+                    n.prioridad = pDer;
+                    n.valor = vDer;
+                    n.der.prioridad = pPadre;
+                    n.der.valor = vPadre;
+                    heapifyDown(n.der);
                 }
             }
         } else {
@@ -114,19 +147,7 @@ public class Heap<T> {
                     n.valor = vIzq;
                     n.izq.prioridad = pPadre;
                     n.izq.valor = vPadre;
-                    heapifyDown(n);
-                }
-            } else {
-                if (n.der != null) {
-                    int pDer = n.der.prioridad;
-                    T vDer = n.der.valor;
-                    if (pDer > pPadre) {
-                        n.prioridad = pDer;
-                        n.valor = vDer;
-                        n.der.prioridad = pPadre;
-                        n.der.valor = vPadre;
-                        heapifyDown(n);
-                    }
+                    heapifyDown(n.izq);
                 }
             }
         }
