@@ -196,4 +196,30 @@ public class BestEffortTests {
         assertEquals(2, sis.ciudadConMayorSuperavit());
 
     }
+
+
+    // TESTS NUEVOS PROPIOS
+
+
+    @Test
+    void testEncolarConUnElemento() {
+        Heap heap = new Heap<String>();
+        heap.encolar(10, "Salta");
+        assertEquals(10, heap.pMax(), "El elemento máximo debería ser 10 al encolar un solo elemento");
+    }
+
+    @Test
+    void testEncolarConVariosElementos() {
+        Heap heap = new Heap<String>();
+        heap.encolar(10, "Salta");
+        heap.encolar(20, "Cordoba");
+        heap.encolar(5, "Buenos Aires");
+        System.out.println(heap.toStringPrioridad());
+        System.out.println(heap.toStringValor());
+        
+    }
+
+
+   
+
 }
