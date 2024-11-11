@@ -1,6 +1,7 @@
 package aed;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Heap<T> {
     // Vamos a usar 2 heaps para ordenar Traslados por rentabilidad y por
@@ -10,6 +11,7 @@ public class Heap<T> {
 
     ArrayList<Nodo> elems;
     int longitud;
+    Comparator<Traslado> comparator;
 
     public class Nodo {
         private int prioridad;
@@ -28,9 +30,10 @@ public class Heap<T> {
     }
 
     // Constructor
-    public Heap() {
+    public Heap(Comparator <Traslado> comparator) {
         elems = new ArrayList();
         longitud = 0;
+        this.comparator = comparator;
     }
 
     // Devuelve la prioridad maxima (no el elemento) (asume que hay al menos 1
