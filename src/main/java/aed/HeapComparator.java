@@ -15,11 +15,13 @@ public class HeapComparator implements Comparator<Traslado> {
             return -Integer.compare(o1.timestamp(), o2.timestamp());
         } 
         if (atributo == "ganancia"){
-            if (o1.gananciaNeta == o2.gananciaNeta){
+            if (o1.gananciaNeta() == o2.gananciaNeta() ){
                 return Integer.compare(o1.id(), o2.id());
             } else {
-                return Integer.compare(o1.ganancia(), o2.ganancia());
+                return Integer.compare(o1.gananciaNeta(), o2.gananciaNeta());
             }
         }
+    return 0;
+    }
     
 }
