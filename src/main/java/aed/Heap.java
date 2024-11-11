@@ -3,7 +3,7 @@ package aed;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class Heap<T> {
+public class Heap<Traslado> {
     // Vamos a usar 2 heaps para ordenar Traslados por rentabilidad y por
     // antiguedad. Como ambos van a tener un int para ordenar la prioridad
     // (ganancia y timestamp), la prioridad de los nodos se puede hacer con int.
@@ -14,14 +14,12 @@ public class Heap<T> {
     HeapComparator comparator;
 
     public class Nodo {
-        private int prioridad;
-        private T valor;
+        private Traslado valor;
         private Nodo padre;
         private Nodo izq;
         private Nodo der;
 
-        Nodo(int prior, T v) {
-            prioridad = prior;
+        Nodo(Traslado v) {
             valor = v;
             padre = null;
             izq = null;
@@ -33,30 +31,18 @@ public class Heap<T> {
     public Heap(Boolean atributo) {
         elems = new ArrayList();
         longitud = 0;
-        this.comparator = new HeapComparator(atributo);
-    }
-
-    // Devuelve la prioridad maxima (no el elemento) (asume que hay al menos 1
-    // elemento)
-    public int pMax() {
-        return elems.get(0).prioridad;
+        comparator = new HeapComparator(atributo);
     }
 
     // Devuelve el elemento de maxima prioridad
-    public T vMax() {
+    public Traslado max() {
         return elems.get(0).valor;
     }
 
     // Dado un elemento, lo encola. El entero p sera el criterio que
     // usemos para encolar, o sea, ganancias, perdidas o antiguedad.
-    public void encolar(T valor) {
-        int prior;
-        if (comparator.atributo){
-            prior = 5;
-        }else {
-            prior =7;
-        }
-        Nodo nuevo = new Nodo(prior, valor);
+    public void encolar(Traslado valor) {        
+        Nodo nuevo = new Nodo(valor);
         if (longitud == 0) {
             elems.add(nuevo);
             longitud++;
@@ -76,15 +62,15 @@ public class Heap<T> {
     }
 
     // Quitar el elemento de maxima prioridad
-    public T desencolar() {
+    public Traslado desencolar() {
         Nodo ultimo = elems.get(longitud - 1);
         Nodo raiz = elems.get(0);
         int pUltimo = ultimo.prioridad;
         int pRaiz = raiz.prioridad;
-        T vUltimo = ultimo.valor;
-        T vRaiz = raiz.valor;
+        Traslado vUltimo = ultimo.valor;
+        Traslado vRaiz = raiz.valor;
         if (longitud == 1) {
-            T ret = elems.remove(0).valor;
+            Traslado ret = elems.remove(0).valor;
             longitud--;
             return ret;
         } else {
@@ -98,7 +84,7 @@ public class Heap<T> {
                 elems.get(longitud - 1).padre.der = null;
             }
             elems.get(longitud - 1).padre = null;
-            T ret = elems.remove(longitud - 1).valor;
+            Traslado ret = elems.remove(longitud - 1).valor;
             longitud--;
             heapifyDown(elems.get(0));
             return ret;
@@ -107,12 +93,13 @@ public class Heap<T> {
 
     // Ingresado un nuevo elemento al array, lo ubica donde corresponde
     public void heapifyUp(Nodo n) {
-        if (n.padre != null) {
+        if (n.padre != null) { 
+            int comparacion = comparator.compare(n.valor, n.padre.valor);
             int pPadre = n.padre.prioridad;
             int pHijo = n.prioridad;
-            T vPadre = n.padre.valor;
-            T vHijo = n.valor;
-            if (comparator.compare(pPadre,pHijo)< 0) {
+            Traslado vPadre = n.padre.valor;
+            Traslado vHijo = n.valor;
+            if (comparacion < 0) {
                 n.padre.prioridad = pHijo;
                 n.prioridad = pPadre;
                 n.padre.valor = vHijo;
@@ -124,12 +111,12 @@ public class Heap<T> {
 
     public void heapifyDown(Nodo n) {
         int pPadre = n.prioridad;
-        T vPadre = n.valor;
+        Traslado vPadre = n.valor;
         if (n.izq != null && n.der != null) {
             int pIzq = n.izq.prioridad;
             int pDer = n.der.prioridad;
-            T vIzq = n.izq.valor;
-            T vDer = n.der.valor;
+            Traslado vIzq = n.izq.valor;
+            Traslado vDer = n.der.valor;
             if (n.izq.prioridad > n.der.prioridad) {
                 if (pIzq > pPadre) {
                     n.prioridad = pIzq;
@@ -150,7 +137,7 @@ public class Heap<T> {
         } else {
             if (n.izq != null) {
                 int pIzq = n.izq.prioridad;
-                T vIzq = n.izq.valor;
+                Traslado vIzq = n.izq.valor;
                 if (pIzq > pPadre) {
                     n.prioridad = pIzq;
                     n.valor = vIzq;
