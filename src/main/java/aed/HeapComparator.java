@@ -2,7 +2,7 @@ package aed;
 
 import java.util.Comparator;
 
-public class HeapComparator implements Comparator<T> {
+public class HeapComparator implements Comparator<Traslado> {
     private String atributo;
 
     public HeapComparator(String atributo) {
