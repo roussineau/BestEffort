@@ -1,11 +1,11 @@
 package aed;
 public class Traslado {
 
-    private int origen;
-    private int destino;
-    private int timestamp;
-    private int id;
-    private int gananciaNeta;
+    int origen;
+    int destino;
+    int timestamp;
+    int id;
+    int gananciaNeta;
 
 
     public Traslado (int id, int origen, int destino, int gananciaNeta, int timestamp){
