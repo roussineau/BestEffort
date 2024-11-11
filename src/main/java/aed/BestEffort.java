@@ -3,7 +3,7 @@ package aed;
 import java.util.ArrayList;
 
 public class BestEffort {
-    //Completar atributos privados
+    private int promedio;
 
     public BestEffort(int cantCiudades, Traslado[] traslados){
         // Implementar
