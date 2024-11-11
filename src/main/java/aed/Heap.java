@@ -11,7 +11,7 @@ public class Heap<T> {
 
     ArrayList<Nodo> elems;
     int longitud;
-    Comparator<Traslado> comparator;
+    HeapComparator comparator;
 
     public class Nodo {
         private int prioridad;
@@ -30,10 +30,10 @@ public class Heap<T> {
     }
 
     // Constructor
-    public Heap(Comparator <Traslado> comparator) {
+    public Heap(Boolean atributo) {
         elems = new ArrayList();
         longitud = 0;
-        this.comparator = comparator;
+        this.comparator = new HeapComparator(atributo);
     }
 
     // Devuelve la prioridad maxima (no el elemento) (asume que hay al menos 1
@@ -49,7 +49,13 @@ public class Heap<T> {
 
     // Dado un elemento, lo encola. El entero p sera el criterio que
     // usemos para encolar, o sea, ganancias, perdidas o antiguedad.
-    public void encolar(int prior, T valor) {
+    public void encolar(T valor) {
+        int prior;
+        if (comparator.atributo){
+            prior = 5;
+        }else {
+            prior =7;
+        }
         Nodo nuevo = new Nodo(prior, valor);
         if (longitud == 0) {
             elems.add(nuevo);
@@ -106,7 +112,7 @@ public class Heap<T> {
             int pHijo = n.prioridad;
             T vPadre = n.padre.valor;
             T vHijo = n.valor;
-            if (pPadre < pHijo) {
+            if (comparator.compare(pPadre,pHijo)< 0) {
                 n.padre.prioridad = pHijo;
                 n.prioridad = pPadre;
                 n.padre.valor = vHijo;
