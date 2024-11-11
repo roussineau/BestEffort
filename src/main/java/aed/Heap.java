@@ -15,13 +15,12 @@ public class Heap<T> {
 
     public class Nodo {
         private int prioridad;
-        private T valor;
+        private Traslado valor;
         private Nodo padre;
         private Nodo izq;
         private Nodo der;
 
-        Nodo(int prior, T v) {
-            prioridad = prior;
+        Nodo(Traslado v) {
             valor = v;
             padre = null;
             izq = null;
@@ -43,20 +42,14 @@ public class Heap<T> {
     }
 
     // Devuelve el elemento de maxima prioridad
-    public T vMax() {
+    public Traslado vMax() {
         return elems.get(0).valor;
     }
 
     // Dado un elemento, lo encola. El entero p sera el criterio que
     // usemos para encolar, o sea, ganancias, perdidas o antiguedad.
-    public void encolar(T valor) {
-        int prior;
-        if (comparator.atributo){
-            prior = 5;
-        }else {
-            prior =7;
-        }
-        Nodo nuevo = new Nodo(prior, valor);
+    public void encolar(Traslado valor) {
+        Nodo nuevo = new Nodo(valor);
         if (longitud == 0) {
             elems.add(nuevo);
             longitud++;
