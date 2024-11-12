@@ -1,7 +1,6 @@
 package aed;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public class Heap {
     // Vamos a usar 2 heaps para ordenar Traslados por rentabilidad y por
@@ -14,7 +13,7 @@ public class Heap {
     HeapComparator comparator;
 
     public class Nodo {
-        private Traslado valor;
+        public Traslado valor;
         private Nodo padre;
         private Nodo izq;
         private Nodo der;
@@ -24,6 +23,14 @@ public class Heap {
             padre = null;
             izq = null;
             der = null;
+        }
+    }
+
+    public class Handle {
+        int referencia;
+        
+        public Handle(int ref) {
+            referencia = ref;
         }
     }
 
