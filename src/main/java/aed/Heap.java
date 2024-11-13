@@ -70,10 +70,14 @@ public class Heap {
 
     // Quitar el elemento de maxima prioridad
     public Traslado desencolar() {
+        return quitar(elems.get(0));
+    }
+
+    // Quitar un traslado especifico
+    public Traslado quitar(Nodo n) {
         Nodo ultimo = elems.get(longitud - 1);
-        Nodo raiz = elems.get(0);
         Traslado vUltimo = ultimo.valor;
-        Traslado vRaiz = raiz.valor;
+        Traslado vRaiz = n.valor;
         if (longitud == 1) {
             Traslado ret = elems.remove(0).valor;
             longitud--;
