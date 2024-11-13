@@ -19,11 +19,11 @@ public class BestEffort {
         for (int i = 0; i < cantCiudades; i++) {
             ciudades.add(new Ciudad(i));
         }
-        this.heapPorTimestamp = new Heap(true);
-        this.heapPorGanancia = new Heap(false);
+        heapPorTimestamp = new Heap(true);
+        heapPorGanancia = new Heap(false);
         for (Traslado traslado : traslados) {
-            this.heapPorTimestamp.encolar(traslado);
-            this.heapPorGanancia.encolar(traslado);
+            heapPorTimestamp.encolar(traslado);
+            heapPorGanancia.encolar(traslado);
         }
     }
 
@@ -48,7 +48,7 @@ public class BestEffort {
     }
 
     public int[] despacharMasRedituables(int n){
-        List<Integer> idsDespachados = new ArrayList<>();
+        ArrayList<Integer> idsDespachados = new ArrayList<>();
         int numTrasladosDisponibles = Math.min(n, heapPorGanancia.elems.size());
         for (int i = 0; i < numTrasladosDisponibles; i++) {
             Traslado traslado = heapPorGanancia.desencolar();
@@ -63,7 +63,7 @@ public class BestEffort {
     }
 
     public int[] despacharMasAntiguos(int n){
-        List<Integer> idsDespachados = new ArrayList<>();
+        ArrayList<Integer> idsDespachados = new ArrayList<>();
         int numTrasladosDisponibles = Math.min(n, heapPorTimestamp.elems.size());
         for (int i = 0; i < numTrasladosDisponibles; i++) {
             Traslado traslado = heapPorTimestamp.desencolar();

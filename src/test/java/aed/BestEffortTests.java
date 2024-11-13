@@ -196,9 +196,7 @@ public class BestEffortTests {
 
     }
 
-
     // Tests nuevos:
-
 
     @Test
     void heapVacio() {
@@ -236,5 +234,46 @@ public class BestEffortTests {
         heap.encolar(t6);
         heap.encolar(t7);
         System.out.println(heap.toStringTimestamp());
+    }
+
+    @Test
+    void desencolar1Elemento() {
+        Heap heap = new Heap(true);
+        Traslado t1 = new Traslado(1, 1, 2, 22, 178);
+        heap.encolar(t1);
+        System.out.println(heap.toStringTimestamp());
+        heap.desencolar();
+        System.out.println(heap.toStringTimestamp());
+    }
+
+    @Test
+    void desencolar9Elementos() {
+        Heap heap = new Heap(true);
+        Traslado t1 = new Traslado(1, 1, 2, 22, 1);
+        Traslado t2 = new Traslado(1, 1, 2, 22, 2);
+        Traslado t3 = new Traslado(1, 1, 2, 22, 3);
+        Traslado t4 = new Traslado(1, 1, 2, 22, 4);
+        Traslado t5 = new Traslado(1, 1, 2, 22, 5);
+        Traslado t6 = new Traslado(1, 1, 2, 22, 6);
+        Traslado t7 = new Traslado(1, 1, 2, 22, 7);
+        Traslado t8 = new Traslado(1, 1, 2, 22, 8);
+        Traslado t9 = new Traslado(1, 1, 2, 22, 9);
+        heap.encolar(t9);
+        heap.encolar(t5);
+        heap.encolar(t4);
+        heap.encolar(t8);
+        heap.encolar(t1);
+        heap.encolar(t3);
+        heap.encolar(t2);
+        heap.encolar(t6);
+        heap.encolar(t7);
+
+        int i = 0;
+        System.out.println(heap.toStringTimestamp());
+
+        while (i < heap.longitud) {
+            heap.desencolar();
+            System.out.println(heap.toStringTimestamp());
+        }
     }
 }
