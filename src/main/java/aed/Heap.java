@@ -26,14 +26,6 @@ public class Heap {
         }
     }
 
-    public class Handle {
-        int referencia;
-        
-        public Handle(int ref) {
-            referencia = ref;
-        }
-    }
-
     // Constructor
     public Heap(Boolean atributo) {
         elems = new ArrayList();
