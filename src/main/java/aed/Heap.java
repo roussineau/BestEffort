@@ -2,153 +2,115 @@ package aed;
 
 import java.util.ArrayList;
 
-public class Heap {
-    // Vamos a usar 2 heaps para ordenar Traslados por rentabilidad y por
-    // antiguedad. Como ambos van a tener un int para ordenar la prioridad
-    // (ganancia y timestamp), la prioridad de los nodos se puede hacer con int.
-    // El tipo generico T es para los elementos del heap.
+public class Heap<T extends Identificable> {
 
-    ArrayList<Nodo> elems;
-    int longitud;
-    HeapComparator comparator;
+    public ArrayList<T> elems;
+    public int maxID;
+    public int longitud;
+    public ArrayList<Integer> inds;
+    public HeapComparator comparator;
 
-    public class Nodo {
-        public Traslado valor;
-        private Nodo padre;
-        private Nodo izq;
-        private Nodo der;
-
-        Nodo(Traslado v) {
-            valor = v;
-            padre = null;
-            izq = null;
-            der = null;
-        }
-    }
-
-    // Constructor
-    public Heap(Boolean atributo) {
-        elems = new ArrayList();
-        longitud = 0;
-        comparator = new HeapComparator(atributo);
-    }
-
-    // Devuelve el elemento de maxima prioridad
-    public Traslado max() {
-        return elems.get(0).valor;
-    }
-
-    // Dado un elemento, lo encola. El entero p sera el criterio que
-    // usemos para encolar, o sea, ganancias, perdidas o antiguedad.
-    public void encolar(Traslado valor) {
-        Nodo nuevo = new Nodo(valor);
-        if (longitud == 0) {
-            elems.add(nuevo);
-            longitud++;
-        } else {
-            elems.add(nuevo);
-            longitud++;
-            int posicionPadre = longitud / 2 - 1;
-            nuevo.padre = elems.get(posicionPadre);
-            if (elems.get(posicionPadre).izq == null) {
-                elems.get(posicionPadre).izq = nuevo;
-            } else {
-                elems.get(posicionPadre).der = nuevo;
-            }
-            heapifyUp(nuevo);
-        }
-
-    }
-
-    // Quitar el elemento de maxima prioridad
-    public Traslado desencolar() {
-        return quitar(elems.get(0));
-    }
-
-    // Quitar un traslado especifico
-    public Traslado quitar(Nodo n) {
-        Nodo ultimo = elems.get(longitud - 1);
-        Traslado vUltimo = ultimo.valor;
-        Traslado vRaiz = n.valor;
-        if (longitud == 1) {
-            Traslado ret = elems.remove(0).valor;
-            longitud--;
-            return ret;
-        } else {
-            elems.get(0).valor = vUltimo;
-            elems.get(longitud - 1).valor = vRaiz;
-            if (elems.get(longitud - 1).padre.der == null) {
-                elems.get(longitud - 1).padre.izq = null;
-            } else {
-                elems.get(longitud - 1).padre.der = null;
-            }
-            elems.get(longitud - 1).padre = null;
-            Traslado ret = elems.remove(longitud - 1).valor;
-            longitud--;
-            heapifyDown(elems.get(0));
-            return ret;
-        }
-    }
-
-    // Ingresado un nuevo elemento al array, lo ubica donde corresponde
-    public void heapifyUp(Nodo n) {
-        if (n.padre != null) {
-            int comparacion = comparator.compare(n.valor, n.padre.valor);
-            Traslado vPadre = n.padre.valor;
-            Traslado vHijo = n.valor;
-            if (comparacion > 0) {
-                n.padre.valor = vHijo;
-                n.valor = vPadre;
-                heapifyUp(n.padre);
-            }
-        }
-    }
-
-    public void heapifyDown(Nodo n) {
-        Traslado vPadre = n.valor;
-        if (n.izq != null && n.der != null) {
-            int comparacionHijos = comparator.compare(n.izq.valor, n.der.valor);
-            Traslado vIzq = n.izq.valor;
-            Traslado vDer = n.der.valor;
-            if (comparacionHijos > 0) {
-                int comparacionIzq = comparator.compare(vIzq, n.valor);
-                if (comparacionIzq > 0) {
-                    n.valor = vIzq;
-                    n.izq.valor = vPadre;
-                    heapifyDown(n.izq);
-                }
-            } else {
-                int comparacionDer = comparator.compare(vDer, n.valor);
-                if (comparacionDer > 0) {
-                    n.valor = vDer;
-                    n.der.valor = vPadre;
-                    heapifyDown(n.der);
-                }
-            }
-        } else {
-            if (n.izq != null) {
-                Traslado vIzq = n.izq.valor;
-                int comparacionIzq = comparator.compare(vIzq, n.valor);
-                if (comparacionIzq > 0) {
-                    n.valor = vIzq;
-                    n.izq.valor = vPadre;
-                    heapifyDown(n.izq);
-                }
-            }
-        }
-    }
-
-    public String toStringTimestamp() {
-        String res = "[";
+    public Heap(boolean c) {
+        elems = new ArrayList<T>();
+        maxID = 0;
+        inds = new ArrayList<Integer>();
         int i = 0;
-        while (i < longitud) {
-            res += elems.get(i).valor.timestamp;
-            if (i < longitud - 1) {
-                res += ", ";
-            }
-            i++;
+        while (i < maxID) {
+            inds.add(-1);
         }
-        res += "]";
-        return res;
+        comparator = new HeapComparator(c);
     }
+
+    public void encolar(T nuevo) {
+        if (maxID < nuevo.getId()) {
+            int i = 0;
+            while (i < maxID - nuevo.getId()) {
+                inds.add(-1);
+            }
+            maxID = nuevo.getId();
+        }
+        elems.add(nuevo);
+        longitud++;
+        if (longitud > 1) {
+            heapifyUp(longitud - 1, nuevo.getId());
+        } else {
+            inds.set(nuevo.getId(), 0);
+        }
+    }
+
+    public void heapifyUp(int n, int id) {
+        int indPadre = n / 2 - 1;
+        T padre = elems.get(indPadre);
+        T hijo = elems.get(n);
+        int comparacion = comparator.compare(hijo, padre);
+        if (comparacion > 0) {
+            elems.set(n, padre);
+            elems.set(indPadre, hijo);
+            inds.set(id, indPadre);
+            heapifyUp(indPadre, id);
+        }
+    }
+
+    public T desencolar() {
+        if (longitud == 1) {
+            longitud--;
+            inds.set(0, -1);
+            return elems.get(0);
+        } else {
+            T ultimo = elems.get(longitud - 1);
+            inds.set(ultimo.getId(), 0);
+            T ret = elems.set(0, ultimo);
+            heapifyDown(0, ultimo.getId());
+            return ret;
+        }
+    }
+
+    public void heapifyDown(int n, int id) {
+        int indIzq = 2 * n + 1;
+        int indDer = 2 * n + 2;
+        T padre = elems.get(n);
+        if (indDer < longitud) { // Hay dos hijos
+            T izq = elems.get(indIzq);
+            T der = elems.get(indDer);
+            int comparacionHijos = comparator.compare(izq, der);
+            if (comparacionHijos > 0) {
+                int comparacion = comparator.compare(izq, padre);
+                if (comparacion > 0) {
+                    elems.set(indIzq, padre);
+                    elems.set(n, izq);
+                    inds.set(izq.getId(), n);
+                    inds.set(id, indIzq);
+                    heapifyDown(indIzq, izq.getId());
+                }
+            } else {
+                if (comparacionHijos < 0) {
+                    int comparacion = comparator.compare(der, padre);
+                    if (comparacion > 0) {
+                        elems.set(indDer, padre);
+                        elems.set(n, der);
+                        inds.set(der.getId(), id);
+                        inds.set(id, indDer);
+                        heapifyDown(comparacion, der.getId());
+                    }
+                }
+            }
+        } else {
+            if (indIzq < longitud) {
+                T izq = elems.get(indIzq);
+                int comparacion = comparator.compare(izq, padre);
+                if (comparacion > 0) {
+                    elems.set(indIzq, padre);
+                    elems.set(n, izq);
+                    inds.set(izq.getId(), id);
+                    inds.set(id, indIzq);
+                    heapifyDown(indIzq, izq.getId());
+                }
+            }
+        }
+    }
+
+    public T getElementById(int id) {
+        return elems.get(inds.get(id));
+    }
+
 }
