@@ -7,24 +7,35 @@ import java.util.Map;
 import aed.Heap.Nodo;
 
 public class BestEffort {
-    private int promedio;
+    private Promedio promedio;
     private ArrayList<Ciudad> ciudades;
     private Heap heapPorTimestamp;
     private Heap heapPorGanancia;
-    private Map<Traslado, Integer> mapaGanancia;
-    private Map<Traslado, Integer> mapaTimestamp;
+    private Heap heapSuperavit;
+
+    public class Promedio {
+        private int totalGanancia;
+        private int despachados;
+        private int promedio;
+
+        Promedio (){
+            totalGanancia = 0;
+            despachados = 0;
+            promedio = 0;
+        }
+
+    }
 
     public BestEffort(int cantCiudades, Traslado[] traslados){
-        this.ciudades = new ArrayList<>();
+        this.ciudades = new ArrayList<Ciudad>();
         for (int i = 0; i < cantCiudades; i++) {
             ciudades.add(new Ciudad(i));
         }
-        heapPorTimestamp = new Heap(true);
         heapPorGanancia = new Heap(false);
-        for (Traslado traslado : traslados) {
-            heapPorTimestamp.encolar(traslado);
-            heapPorGanancia.encolar(traslado);
-        }
+        heapPorTimestamp = new Heap(true);
+        heapSuperavit = new Heap(false);
+        heapPorTimestamp.heapify(traslados);
+        heapPorGanancia.heapify(traslados);
     }
 
     public void registrarTraslados(Traslado[] traslados){
@@ -32,19 +43,12 @@ public class BestEffort {
             heapPorTimestamp.encolar(traslado);
             heapPorGanancia.encolar(traslado);
         }
-        actualizarPromedio();
     }
 
-    private void actualizarPromedio() {
-        int totalGanancia = 0;
-        int numTraslados = 0;
-        for (Nodo nodo : heapPorGanancia.elems) {
-            totalGanancia += nodo.valor.gananciaNeta;
-            numTraslados++;
-        }
-        if (numTraslados != 0) {
-            promedio = totalGanancia / numTraslados;
-        }
+    private void actualizarPromedio(Traslado t) {
+        promedio.totalGanancia = promedio.totalGanancia + t.gananciaNeta;
+        promedio.despachados ++;
+        promedio.promedio = promedio.totalGanancia / promedio.despachados;
     }
 
     public int[] despacharMasRedituables(int n){
@@ -53,7 +57,7 @@ public class BestEffort {
         for (int i = 0; i < numTrasladosDisponibles; i++) {
             Traslado traslado = heapPorGanancia.desencolar();
             idsDespachados.add(traslado.id);
-            actualizarPromedio();
+            actualizarPromedio(traslado);
         }
         int[] idsSeq = new int[idsDespachados.size()];
         for (int i = 0; i < idsDespachados.size(); i++) {
@@ -68,7 +72,7 @@ public class BestEffort {
         for (int i = 0; i < numTrasladosDisponibles; i++) {
             Traslado traslado = heapPorTimestamp.desencolar();
             idsDespachados.add(traslado.id);
-            actualizarPromedio();
+            actualizarPromedio(traslado);
         }
         int[] idsSeq = new int[idsDespachados.size()];
         for (int i = 0; i < idsDespachados.size(); i++) {
@@ -93,8 +97,7 @@ public class BestEffort {
     }
 
     public int gananciaPromedioPorTraslado(){
-        // Implementar
-        return 0;
+        return promedio.promedio;
     }
     
 }
