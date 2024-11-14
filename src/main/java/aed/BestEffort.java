@@ -1,26 +1,22 @@
 package aed;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-import aed.Heap.Nodo;
+import aed.HeapTraslados.Nodo;
 
 public class BestEffort {
     private int promedio;
     private ArrayList<Ciudad> ciudades;
-    private Heap heapPorTimestamp;
-    private Heap heapPorGanancia;
-    private Map<Traslado, Integer> mapaGanancia;
-    private Map<Traslado, Integer> mapaTimestamp;
+    private HeapTraslados heapPorTimestamp;
+    private HeapTraslados heapPorGanancia;
 
     public BestEffort(int cantCiudades, Traslado[] traslados){
         this.ciudades = new ArrayList<>();
         for (int i = 0; i < cantCiudades; i++) {
             ciudades.add(new Ciudad(i));
         }
-        heapPorTimestamp = new Heap(true);
-        heapPorGanancia = new Heap(false);
+        heapPorTimestamp = new HeapTraslados(true);
+        heapPorGanancia = new HeapTraslados(false);
         for (Traslado traslado : traslados) {
             heapPorTimestamp.encolar(traslado);
             heapPorGanancia.encolar(traslado);
@@ -52,6 +48,7 @@ public class BestEffort {
         int numTrasladosDisponibles = Math.min(n, heapPorGanancia.elems.size());
         for (int i = 0; i < numTrasladosDisponibles; i++) {
             Traslado traslado = heapPorGanancia.desencolar();
+
             idsDespachados.add(traslado.id);
             actualizarPromedio();
         }

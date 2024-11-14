@@ -1,14 +1,14 @@
 package aed;
-public class Traslado {
+
+public class Traslado implements Identificable {
 
     int origen;
     int destino;
     int timestamp;
-    int id;
+    public int id;
     int gananciaNeta;
 
-
-    public Traslado (int id, int origen, int destino, int gananciaNeta, int timestamp){
+    public Traslado(int id, int origen, int destino, int gananciaNeta, int timestamp) {
         this.id = id;
         this.origen = origen;
         this.destino = destino;
@@ -16,25 +16,29 @@ public class Traslado {
         this.timestamp = timestamp;
     }
 
-
-    public int id (){
+    public int id() {
         return id;
     }
 
-    public int origen (){
+    public int origen() {
         return origen;
     }
 
-    public int destino (){
+    public int destino() {
         return destino;
     }
 
-    public int gananciaNeta (){
+    public int gananciaNeta() {
         return gananciaNeta;
     }
 
-    public int timestamp (){
+    public int timestamp() {
         return timestamp;
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
 }

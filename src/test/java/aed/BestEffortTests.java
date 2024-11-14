@@ -200,13 +200,13 @@ public class BestEffortTests {
 
     @Test
     void heapVacio() {
-        Heap heap = new Heap(true);
+        HeapTraslados heap = new HeapTraslados(true);
         System.out.println(heap.toStringTimestamp());
     }
 
     @Test
     void heap1Elemento() {
-        Heap heap = new Heap(true);
+        HeapTraslados heap = new HeapTraslados(true);
         Traslado t1 = new Traslado(1, 1, 2, 22, 178);
         heap.encolar(t1);
         System.out.println(heap.toStringTimestamp());
@@ -214,7 +214,7 @@ public class BestEffortTests {
 
     @Test
     void heap9Elementos() {
-        Heap heap = new Heap(true);
+        HeapTraslados heap = new HeapTraslados(true);
         Traslado t1 = new Traslado(1, 1, 2, 22, 1);
         Traslado t2 = new Traslado(1, 1, 2, 22, 2);
         Traslado t3 = new Traslado(1, 1, 2, 22, 3);
@@ -238,7 +238,7 @@ public class BestEffortTests {
 
     @Test
     void desencolar1Elemento() {
-        Heap heap = new Heap(true);
+        HeapTraslados heap = new HeapTraslados(true);
         Traslado t1 = new Traslado(1, 1, 2, 22, 178);
         heap.encolar(t1);
         System.out.println(heap.toStringTimestamp());
@@ -248,7 +248,7 @@ public class BestEffortTests {
 
     @Test
     void desencolar9Elementos() {
-        Heap heap = new Heap(true);
+        HeapTraslados heap = new HeapTraslados(true);
         Traslado t1 = new Traslado(1, 1, 2, 22, 1);
         Traslado t2 = new Traslado(1, 1, 2, 22, 2);
         Traslado t3 = new Traslado(1, 1, 2, 22, 3);
