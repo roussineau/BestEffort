@@ -10,11 +10,25 @@ public class Heap {
     public ArrayList<Integer> inds;
     public HeapComparator<Identificable> comparator;
 
-    public Heap(HeapComparator<Identificable> c) {
-        elems = new ArrayList<Identificable>();
-        maxID = 0;
-        inds = new ArrayList<Integer>();
-        comparator = c;
+    public class Nodo {
+        public Traslado valor;
+        private Nodo padre;
+        private Nodo izq;
+        private Nodo der;
+
+        Nodo(Traslado v) {
+            valor = v;
+            padre = null;
+            izq = null;
+            der = null;
+        }
+    }
+
+    // Constructor
+    public Heap(Boolean atributo) {
+        elems = new ArrayList();
+        longitud = 0;
+        comparator = new HeapComparator(atributo);
     }
 
     public void encolar(Identificable nuevo) {

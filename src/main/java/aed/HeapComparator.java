@@ -2,7 +2,7 @@ package aed;
 
 import java.util.Comparator;
 
-public class HeapComparator implements Comparator<Traslado> {
+public class HeapComparator implements Comparator<Object> {
     public Boolean atributo;
 
     public HeapComparator(Boolean atributo) {
@@ -10,15 +10,30 @@ public class HeapComparator implements Comparator<Traslado> {
     }
 
     @Override
-    public int compare(Traslado o1, Traslado o2) {
+    public int compare(Object o1, Object o2) {
         if (atributo) {
-            return -Integer.compare(o1.timestamp, o2.timestamp);
+            if (o1 instanceof Traslado && o2 instanceof Traslado) {
+                Traslado t1 = (Traslado) o1;
+                Traslado t2 = (Traslado) o2;
+                return -Integer.compare(t1.timestamp(), t2.timestamp());
+            }
         } else {
-            if (o1.gananciaNeta == o2.gananciaNeta) {
-                return Integer.compare(o1.id(), o2.id());
-            } else {
-                return Integer.compare(o1.gananciaNeta, o2.gananciaNeta);
+            if (o1 instanceof Traslado && o2 instanceof Traslado) {
+                Traslado t1 = (Traslado) o1;
+                Traslado t2 = (Traslado) o2;
+                if (t1.gananciaNeta() == t2.gananciaNeta()) {
+                    return Integer.compare(t1.id(), t2.id());
+                } else {
+                    return Integer.compare(t1.gananciaNeta(), t2.gananciaNeta());
+                }
+            } else{
+                if (o1 instanceof Ciudad && o2 instanceof Ciudad) {
+                    Ciudad c1 = (Ciudad) o1;
+                    Ciudad c2 = (Ciudad) o2;
+                    return Integer.compare(c1.superavit(), c2.superavit());
+                }
             }
         }
+        return 0;
     }
 }
