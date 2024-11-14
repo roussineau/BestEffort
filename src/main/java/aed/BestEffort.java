@@ -6,11 +6,9 @@ import java.util.ArrayList;
 public class BestEffort {
     private Promedio promedio;
     private ArrayList<Ciudad> ciudades;
-    private Heap heapPorTimestamp;
-    private Heap heapPorGanancia;
-<<<<<<< HEAD
-=======
-    private Heap heapSuperavit;
+    private Heap<Traslado> heapPorTimestamp;
+    private Heap<Traslado> heapPorGanancia;
+    private Heap<Ciudad> heapSuperavit;
 
     public class Promedio {
         private int totalGanancia;
@@ -24,16 +22,15 @@ public class BestEffort {
         }
 
     }
->>>>>>> origin/main
 
     public BestEffort(int cantCiudades, Traslado[] traslados){
         this.ciudades = new ArrayList<Ciudad>();
         for (int i = 0; i < cantCiudades; i++) {
             ciudades.add(new Ciudad(i));
         }
-        heapPorGanancia = new Heap(false);
-        heapPorTimestamp = new Heap(true);
-        heapSuperavit = new Heap(false);
+        heapPorGanancia = new Heap<Traslado>(false);
+        heapPorTimestamp = new Heap<Traslado>(true);
+        heapSuperavit = new Heap<Ciudad>(false);
         heapPorTimestamp.heapify(traslados);
         heapPorGanancia.heapify(traslados);
     }

@@ -2,26 +2,26 @@ package aed;
 
 import java.util.ArrayList;
 
-public class Heap {
+public class Heap<T extends Identificable> {
 
-    public ArrayList<Identificable> elems;
+    public ArrayList<T> elems;
     public int maxID;
     public int longitud;
     public ArrayList<Integer> inds;
     public HeapComparator comparator;
 
-    public Heap(HeapComparator c) {
-        elems = new ArrayList<Identificable>();
+    public Heap(boolean c) {
+        elems = new ArrayList<T>();
         maxID = 0;
         inds = new ArrayList<Integer>();
         int i = 0;
         while (i < maxID) {
             inds.add(-1);
         }
-        comparator = c;
+        comparator = new HeapComparator(c);
     }
 
-    public void encolar(Identificable nuevo) {
+    public void encolar(T nuevo) {
         if (maxID < nuevo.getId()) {
             int i = 0;
             while (i < maxID - nuevo.getId()) {
@@ -40,8 +40,8 @@ public class Heap {
 
     public void heapifyUp(int n, int id) {
         int indPadre = n / 2 - 1;
-        Identificable padre = elems.get(indPadre);
-        Identificable hijo = elems.get(n);
+        T padre = elems.get(indPadre);
+        T hijo = elems.get(n);
         int comparacion = comparator.compare(hijo, padre);
         if (comparacion > 0) {
             elems.set(n, padre);
@@ -51,15 +51,15 @@ public class Heap {
         }
     }
 
-    public Identificable desencolar() {
+    public T desencolar() {
         if (longitud == 1) {
             longitud--;
             inds.set(0, -1);
             return elems.get(0);
         } else {
-            Identificable ultimo = elems.get(longitud - 1);
+            T ultimo = elems.get(longitud - 1);
             inds.set(ultimo.getId(), 0);
-            Identificable ret = elems.set(0, ultimo);
+            T ret = elems.set(0, ultimo);
             heapifyDown(0, ultimo.getId());
             return ret;
         }
@@ -68,10 +68,10 @@ public class Heap {
     public void heapifyDown(int n, int id) {
         int indIzq = 2 * n + 1;
         int indDer = 2 * n + 2;
-        Identificable padre = elems.get(n);
+        T padre = elems.get(n);
         if (indDer < longitud) { // Hay dos hijos
-            Identificable izq = elems.get(indIzq);
-            Identificable der = elems.get(indDer);
+            T izq = elems.get(indIzq);
+            T der = elems.get(indDer);
             int comparacionHijos = comparator.compare(izq, der);
             if (comparacionHijos > 0) {
                 int comparacion = comparator.compare(izq, padre);
@@ -96,7 +96,7 @@ public class Heap {
             }
         } else {
             if (indIzq < longitud) {
-                Identificable izq = elems.get(indIzq);
+                T izq = elems.get(indIzq);
                 int comparacion = comparator.compare(izq, padre);
                 if (comparacion > 0) {
                     elems.set(indIzq, padre);
@@ -109,7 +109,7 @@ public class Heap {
         }
     }
 
-    public Identificable getElementById(int id) {
+    public T getElementById(int id) {
         return elems.get(inds.get(id));
     }
 
