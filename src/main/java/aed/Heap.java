@@ -17,6 +17,7 @@ public class Heap<T extends Identificable> {
         int i = 0;
         while (i < maxID) {
             inds.add(-1);
+            i++;
         }
         comparator = new HeapComparator(c);
     }
@@ -24,8 +25,9 @@ public class Heap<T extends Identificable> {
     public void encolar(T nuevo) {
         if (maxID < nuevo.getId()) {
             int i = 0;
-            while (i < maxID - nuevo.getId()) {
+            while (i < nuevo.getId() - maxID) {
                 inds.add(-1);
+                i++;
             }
             maxID = nuevo.getId();
         }
@@ -39,7 +41,7 @@ public class Heap<T extends Identificable> {
     }
 
     public void heapifyUp(int n, int id) {
-        int indPadre = n / 2 - 1;
+        int indPadre = (n - 1) / 2;
         T padre = elems.get(indPadre);
         T hijo = elems.get(n);
         int comparacion = comparator.compare(hijo, padre);
@@ -122,8 +124,9 @@ public class Heap<T extends Identificable> {
     }
 
     public void arrayList2heap(ArrayList<T> arrayList) {
-        for (T elem : arrayList) {
-            encolar(elem);
+        arrayList.clear();
+        for (int i = 0; i < arrayList.size(); i++) {
+            encolar(arrayList.get(i));
         }
     }
 

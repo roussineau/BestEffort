@@ -29,7 +29,8 @@ public class BestEffort {
     }
 
     public BestEffort(int cantCiudades, Traslado[] traslados){
-        this.ciudades = new ArrayList<Ciudad>();
+        promedio = new Promedio();
+        ciudades = new ArrayList<Ciudad>();
         for (int i = 0; i < cantCiudades; i++) {
             ciudades.add(new Ciudad(i));
         }
@@ -38,6 +39,7 @@ public class BestEffort {
         heapSuperavit = new Heap<Ciudad>(false);
         heapTimestamp.array2heap(traslados);
         heapGanancia.array2heap(traslados);
+        heapSuperavit.arrayList2heap(ciudades);
         despachados = new ArrayList<Traslado>();
         arregloGanancias = new ArrayList<Integer>();
         arregloPerdidas = new ArrayList<Integer>();
@@ -65,6 +67,7 @@ public class BestEffort {
             Traslado traslado = heapGanancia.desencolar();
             heapTimestamp.elems.remove(heapTimestamp.inds.get(traslado.getId()));
             heapTimestamp.arrayList2heap(heapTimestamp.elems);
+            heapTimestamp.longitud--;
             idsDespachados.add(traslado.id);
             despachados.add(traslado);
             actualizarPromedio(traslado);
