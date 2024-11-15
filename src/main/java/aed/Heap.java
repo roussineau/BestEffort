@@ -34,7 +34,7 @@ public class Heap<T extends Identificable> {
         if (longitud > 1) {
             heapifyUp(longitud - 1, nuevo.getId());
         } else {
-            inds.set(nuevo.getId(), 0);
+            inds.add(nuevo.getId());
         }
     }
 
@@ -109,8 +109,20 @@ public class Heap<T extends Identificable> {
         }
     }
 
+    public void actualizarPrioridad(T elem, T newElem) {
+        elems.set(inds.get(elem.getId()), newElem);
+        heapifyUp(inds.get(newElem.getId()), newElem.getId());
+        heapifyDown(inds.get(newElem.getId()), newElem.getId());
+    }
+
     public void array2heap(T[] array) {
         for (T elem : array) {
+            encolar(elem);
+        }
+    }
+
+    public void arrayList2heap(ArrayList<T> arrayList) {
+        for (T elem : arrayList) {
             encolar(elem);
         }
     }
