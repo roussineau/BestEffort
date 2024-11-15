@@ -6,16 +6,17 @@ import java.util.ArrayList;
 public class BestEffort {
     private Promedio promedio;
     private ArrayList<Ciudad> ciudades;
-    private Heap<Traslado> heapPorTimestamp;
-    private Heap<Traslado> heapPorGanancia;
+    private Heap<Traslado> heapTimestamp;
+    private Heap<Traslado> heapGanancia;
     private Heap<Ciudad> heapSuperavit;
+    private ArrayList<Traslado> despachados;
 
     public class Promedio {
         private int totalGanancia;
         private int despachados;
         private int promedio;
 
-        Promedio (){
+        public Promedio(){
             totalGanancia = 0;
             despachados = 0;
             promedio = 0;
@@ -28,33 +29,35 @@ public class BestEffort {
         for (int i = 0; i < cantCiudades; i++) {
             ciudades.add(new Ciudad(i));
         }
-        heapPorGanancia = new Heap<Traslado>(false);
-        heapPorTimestamp = new Heap<Traslado>(true);
+        heapGanancia = new Heap<Traslado>(false);
+        heapTimestamp = new Heap<Traslado>(true);
         heapSuperavit = new Heap<Ciudad>(false);
-        heapPorTimestamp.heapify(traslados);
-        heapPorGanancia.heapify(traslados);
+        heapTimestamp.array2heap(traslados);
+        heapGanancia.array2heap(traslados);
+        despachados = new ArrayList<Traslado>();
     }
 
     public void registrarTraslados(Traslado[] traslados){
         for (Traslado traslado : traslados) {
-            heapPorTimestamp.encolar(traslado);
-            heapPorGanancia.encolar(traslado);
+            heapTimestamp.encolar(traslado);
+            heapGanancia.encolar(traslado);
         }
     }
 
     private void actualizarPromedio(Traslado t) {
-        promedio.totalGanancia = promedio.totalGanancia + t.gananciaNeta;
+        promedio.totalGanancia += t.gananciaNeta;
         promedio.despachados ++;
         promedio.promedio = promedio.totalGanancia / promedio.despachados;
     }
 
     public int[] despacharMasRedituables(int n){
         ArrayList<Integer> idsDespachados = new ArrayList<>();
-        int numTrasladosDisponibles = Math.min(n, heapPorGanancia.elems.size());
-        for (int i = 0; i < numTrasladosDisponibles; i++) {
-            Traslado traslado = heapPorGanancia.desencolar();
-
+        int cantDisponibles = Math.min(n, heapGanancia.longitud);
+        for (int i = 0; i < cantDisponibles; i++) {
+            Traslado traslado = heapGanancia.desencolar();
+            heapTimestamp.elems.remove(heapTimestamp.inds.get(traslado.getId()));
             idsDespachados.add(traslado.id);
+            despachados.add(traslado);
             actualizarPromedio(traslado);
         }
         int[] idsSeq = new int[idsDespachados.size()];
@@ -66,10 +69,12 @@ public class BestEffort {
 
     public int[] despacharMasAntiguos(int n){
         ArrayList<Integer> idsDespachados = new ArrayList<>();
-        int numTrasladosDisponibles = Math.min(n, heapPorTimestamp.elems.size());
-        for (int i = 0; i < numTrasladosDisponibles; i++) {
-            Traslado traslado = heapPorTimestamp.desencolar();
+        int cantDisponibles = Math.min(n, heapTimestamp.longitud);
+        for (int i = 0; i < cantDisponibles; i++) {
+            Traslado traslado = heapTimestamp.desencolar();
+            heapGanancia.elems.remove(heapGanancia.inds.get(traslado.getId()));
             idsDespachados.add(traslado.id);
+            despachados.add(traslado);
             actualizarPromedio(traslado);
         }
         int[] idsSeq = new int[idsDespachados.size()];
