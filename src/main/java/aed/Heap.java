@@ -34,6 +34,7 @@ public class Heap<T extends Identificable> {
         elems.add(nuevo);
         longitud++;
         if (longitud > 1) {
+            inds.set(nuevo.getId(), longitud-1);
             heapifyUp(longitud - 1, nuevo.getId());
         } else {
             inds.add(nuevo.getId());
@@ -136,7 +137,6 @@ public class Heap<T extends Identificable> {
             j--;
             i = hijo(j);
         }
-
     }
 
     public int hijo(int j) {
