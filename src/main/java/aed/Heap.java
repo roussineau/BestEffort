@@ -124,11 +124,43 @@ public class Heap<T extends Identificable> {
     }
 
     public void arrayList2heap(ArrayList<T> arrayList) {
-        arrayList.clear();
-        for (int i = 0; i < arrayList.size(); i++) {
-            encolar(arrayList.get(i));
-        }
+        this.elems = new ArrayList<T>(arrayList.size());
+        int j = (this.elems.size() - 2) / 2;
+        int i = hijo(j);
+        while (j >= 0){
+            if(comparator.compare(elems.get(i), elems.get(i))> 0){
+                heapify(j, i);
+            }
+            j --;
+            i = hijo(j);
+        } 
+        
     }
+
+    public int hijo(int j){
+        int i;
+        if (2*j + 2 < elems.size() && j >= 0){
+            if (comparator.compare(elems.get(2*j + 1), elems.get(2*j + 2))> 0){
+                i = 2*j + 1;
+            } else {
+                i = 2*j + 2;
+            }
+        } else {
+            i = 2*j + 1;
+        }
+        return i;
+    }
+
+    public void heapify (int j, int i){
+        while (i < elems.size() &&  (comparator.compare(elems.get(i), elems.get(j))> 0)){
+            T padre = elems.get(j); 
+            elems.set(j, elems.get(i));
+            elems.set(i, padre);
+            j = i;
+            i = hijo(j);
+        }
+        }
+
 
     public T getElementById(int id) {
         return elems.get(inds.get(id));
