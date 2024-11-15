@@ -235,8 +235,8 @@ public class BestEffortTests {
  
         String str = heap.toString();
         System.out.println(str);
-        Traslado nuevo = new Traslado(43, 1, 2, 1452, 333);
+        Traslado nuevo = new Traslado(43, 1, 2, 1452, 0);
         heap.actualizarPrioridad(modificable, nuevo);  
-        System.out.println(str);
+        System.out.println(heap.toString());
     }
 }
