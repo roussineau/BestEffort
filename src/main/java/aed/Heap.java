@@ -109,6 +109,12 @@ public class Heap<T extends Identificable> {
         }
     }
 
+    public void array2heap(T[] array) {
+        for (T elem : array) {
+            encolar(elem);
+        }
+    }
+
     public T getElementById(int id) {
         return elems.get(inds.get(id));
     }
