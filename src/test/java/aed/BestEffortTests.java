@@ -198,4 +198,45 @@ public class BestEffortTests {
 
     // Tests nuevos:
 
+    @Test
+    void desencolar() {
+        Heap<Traslado> heap = new Heap<Traslado>(true);
+        heap.encolar(new Traslado(1, 1, 2, 1452, 1));
+        heap.encolar(new Traslado(2, 1, 2, 1452, 2));
+        heap.encolar(new Traslado(3, 1, 2, 1452, 3));
+        heap.encolar(new Traslado(8, 1, 2, 1452, 8));
+        heap.encolar(new Traslado(9, 1, 2, 1452, 9));
+        heap.encolar(new Traslado(12, 1, 2, 1452, 12));
+        heap.encolar(new Traslado(43, 1, 2, 1452, 43));
+        heap.encolar(new Traslado(19, 1, 2, 1452, 19));
+ 
+
+        int i = 0;
+        while (i < heap.longitud) {
+            String str = heap.toString();
+            heap.desencolar();
+            System.out.println(str);
+            System.out.println(heap.longitud);
+        }   
+    }
+
+    @Test
+    void modificar() {
+        Traslado modificable = new Traslado(43, 1, 2, 1452, 43);
+        Heap<Traslado> heap = new Heap<Traslado>(true);
+        heap.encolar(new Traslado(1, 1, 2, 1452, 1));
+        heap.encolar(new Traslado(2, 1, 2, 1452, 2));
+        heap.encolar(new Traslado(3, 1, 2, 1452, 3));
+        heap.encolar(new Traslado(8, 1, 2, 1452, 8));
+        heap.encolar(new Traslado(9, 1, 2, 1452, 9));
+        heap.encolar(new Traslado(12, 1, 2, 1452, 12));
+        heap.encolar(modificable);
+        heap.encolar(new Traslado(19, 1, 2, 1452, 19));
+ 
+        String str = heap.toString();
+        System.out.println(str);
+        Traslado nuevo = new Traslado(43, 1, 2, 1452, 333);
+        heap.actualizarPrioridad(modificable, nuevo);  
+        System.out.println(str);
+    }
 }

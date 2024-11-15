@@ -59,12 +59,12 @@ public class Heap<T extends Identificable> {
             inds.set(0, -1);
             return elems.remove(0);
         } else {
-            T ultimo = elems.get(longitud - 1);
-            T primero = elems.remove(0);
-            inds.set(ultimo.getId(), 0);
+            T ultimo = elems.remove(longitud - 1);
+            T primero = elems.get(0);
             elems.set(0, ultimo);
-            heapifyDown(0, ultimo.getId());
+            inds.set(ultimo.getId(), 0);
             longitud--;
+            heapifyDown(0, ultimo.getId());
             return primero;
         }
     }
@@ -82,8 +82,8 @@ public class Heap<T extends Identificable> {
                 if (comparacion > 0) {
                     elems.set(indIzq, padre);
                     elems.set(n, izq);
+                    inds.set(padre.getId(), indIzq);
                     inds.set(izq.getId(), n);
-                    inds.set(id, indIzq);
                     heapifyDown(indIzq, izq.getId());
                 }
             } else {
@@ -92,9 +92,9 @@ public class Heap<T extends Identificable> {
                     if (comparacion > 0) {
                         elems.set(indDer, padre);
                         elems.set(n, der);
-                        inds.set(der.getId(), id);
-                        inds.set(id, indDer);
-                        heapifyDown(comparacion, der.getId());
+                        inds.set(padre.getId(), indDer);
+                        inds.set(der.getId(), n);
+                        heapifyDown(indDer, der.getId());
                     }
                 }
             }
@@ -105,8 +105,8 @@ public class Heap<T extends Identificable> {
                 if (comparacion > 0) {
                     elems.set(indIzq, padre);
                     elems.set(n, izq);
-                    inds.set(izq.getId(), id);
-                    inds.set(id, indIzq);
+                    inds.set(padre.getId(), indIzq);
+                    inds.set(izq.getId(), n);
                     heapifyDown(indIzq, izq.getId());
                 }
             }
@@ -115,8 +115,8 @@ public class Heap<T extends Identificable> {
 
     public void actualizarPrioridad(T elem, T newElem) {
         elems.set(inds.get(elem.getId()), newElem);
-        heapifyUp(inds.get(newElem.getId()), newElem.getId());
-        heapifyDown(inds.get(newElem.getId()), newElem.getId());
+        heapifyUp(inds.get(elem.getId()), elem.getId());
+        heapifyDown(inds.get(elem.getId()), elem.getId());
     }
 
     public void array2heap(T[] array) {
@@ -129,43 +129,56 @@ public class Heap<T extends Identificable> {
         this.elems = new ArrayList<T>(arrayList.size());
         int j = (this.elems.size() - 2) / 2;
         int i = hijo(j);
-        while (j >= 0){
-            if(comparator.compare(elems.get(i), elems.get(i))> 0){
+        while (j >= 0) {
+            if (comparator.compare(elems.get(i), elems.get(i)) > 0) {
                 heapify(j, i);
             }
-            j --;
+            j--;
             i = hijo(j);
-        } 
-        
+        }
+
     }
 
-    public int hijo(int j){
+    public int hijo(int j) {
         int i;
-        if (2*j + 2 < elems.size() && j >= 0){
-            if (comparator.compare(elems.get(2*j + 1), elems.get(2*j + 2))> 0){
-                i = 2*j + 1;
+        if (2 * j + 2 < elems.size() && j >= 0) {
+            if (comparator.compare(elems.get(2 * j + 1), elems.get(2 * j + 2)) > 0) {
+                i = 2 * j + 1;
             } else {
-                i = 2*j + 2;
+                i = 2 * j + 2;
             }
         } else {
-            i = 2*j + 1;
+            i = 2 * j + 1;
         }
         return i;
     }
 
-    public void heapify (int j, int i){
-        while (i < elems.size() &&  (comparator.compare(elems.get(i), elems.get(j))> 0)){
-            T padre = elems.get(j); 
+    public void heapify(int j, int i) {
+        while (i < elems.size() && (comparator.compare(elems.get(i), elems.get(j)) > 0)) {
+            T padre = elems.get(j);
             elems.set(j, elems.get(i));
             elems.set(i, padre);
             j = i;
             i = hijo(j);
         }
-        }
-
+    }
 
     public T getElementById(int id) {
         return elems.get(inds.get(id));
+    }
+
+    public String toString() {
+        String ret = "[";
+        int i = 0;
+        while (i < longitud) {
+            ret += elems.get(i).getId();
+            if (i + 1 != longitud) {
+                ret += ", ";
+            }
+            i++;
+        }
+        ret += "]";
+        return ret;
     }
 
 }
