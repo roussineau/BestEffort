@@ -3,9 +3,9 @@ package aed;
 public class Ciudad implements Identificable {
 
   public int id;
-  private int ganancia;
-  private int perdida;
-  private int superavit;
+  public int ganancia;
+  public int perdida;
+  public int superavit;
 
   public Ciudad(int id) {
     this.id = id;

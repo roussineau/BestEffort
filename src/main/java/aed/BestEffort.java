@@ -10,6 +10,10 @@ public class BestEffort {
     private Heap<Traslado> heapGanancia;
     private Heap<Ciudad> heapSuperavit;
     private ArrayList<Traslado> despachados;
+    private Integer maxGanancia;
+    private Integer maxPerdida;
+    private ArrayList<Integer> arregloGanancias;
+    private ArrayList<Integer> arregloPerdidas;
 
     public class Promedio {
         private int totalGanancia;
@@ -35,6 +39,10 @@ public class BestEffort {
         heapTimestamp.array2heap(traslados);
         heapGanancia.array2heap(traslados);
         despachados = new ArrayList<Traslado>();
+        arregloGanancias = new ArrayList<Integer>();
+        arregloPerdidas = new ArrayList<Integer>();
+        maxGanancia = 0;
+        maxPerdida = 0;
     }
 
     public void registrarTraslados(Traslado[] traslados){
@@ -56,9 +64,39 @@ public class BestEffort {
         for (int i = 0; i < cantDisponibles; i++) {
             Traslado traslado = heapGanancia.desencolar();
             heapTimestamp.elems.remove(heapTimestamp.inds.get(traslado.getId()));
+            heapTimestamp.arrayList2heap(heapTimestamp.elems);
             idsDespachados.add(traslado.id);
             despachados.add(traslado);
             actualizarPromedio(traslado);
+            // Actualizar ciudades
+            int monto = traslado.gananciaNeta;
+            Ciudad origen = heapSuperavit.elems.get(heapSuperavit.inds.get(traslado.origen));
+            Ciudad destino = heapSuperavit.elems.get(heapSuperavit.inds.get(traslado.destino));
+            origen.ganancia += monto;
+            origen.superavit += monto;
+            destino.perdida += monto;
+            destino.superavit -= monto;
+            heapSuperavit.actualizarPrioridad(heapSuperavit.elems.get(heapSuperavit.inds.get(traslado.origen)), origen);
+            heapSuperavit.actualizarPrioridad(heapSuperavit.elems.get(heapSuperavit.inds.get(traslado.destino)), destino);
+            // Actualizar estadisticas
+            if (origen.ganancia > maxGanancia) {
+                maxGanancia = origen.ganancia;
+                arregloGanancias.clear();
+                arregloGanancias.add(origen.id);
+            } else {
+                if (origen.ganancia == maxGanancia) {
+                    arregloGanancias.add(origen.id);
+                }
+            }
+            if (origen.perdida > maxPerdida) {
+                maxPerdida = origen.perdida;
+                arregloPerdidas.clear();
+                arregloPerdidas.add(origen.id);
+            } else {
+                if (origen.perdida == maxPerdida) {
+                    arregloPerdidas.add(origen.id);
+                }
+            }
         }
         int[] idsSeq = new int[idsDespachados.size()];
         for (int i = 0; i < idsDespachados.size(); i++) {
@@ -73,9 +111,11 @@ public class BestEffort {
         for (int i = 0; i < cantDisponibles; i++) {
             Traslado traslado = heapTimestamp.desencolar();
             heapGanancia.elems.remove(heapGanancia.inds.get(traslado.getId()));
+            heapGanancia.arrayList2heap(heapGanancia.elems);
             idsDespachados.add(traslado.id);
             despachados.add(traslado);
             actualizarPromedio(traslado);
+
         }
         int[] idsSeq = new int[idsDespachados.size()];
         for (int i = 0; i < idsDespachados.size(); i++) {
@@ -85,18 +125,15 @@ public class BestEffort {
     }
 
     public int ciudadConMayorSuperavit(){
-        // Implementar
-        return 0;
+        return heapSuperavit.elems.get(0).getId();
     }
 
     public ArrayList<Integer> ciudadesConMayorGanancia(){
-        // Implementar
-        return null;
+        return arregloGanancias;
     }
 
     public ArrayList<Integer> ciudadesConMayorPerdida(){
-        // Implementar
-        return null;
+        return arregloPerdidas;
     }
 
     public int gananciaPromedioPorTraslado(){
