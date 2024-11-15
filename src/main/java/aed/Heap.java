@@ -57,13 +57,15 @@ public class Heap<T extends Identificable> {
         if (longitud == 1) {
             longitud--;
             inds.set(0, -1);
-            return elems.get(0);
+            return elems.remove(0);
         } else {
             T ultimo = elems.get(longitud - 1);
+            T primero = elems.remove(0);
             inds.set(ultimo.getId(), 0);
-            T ret = elems.set(0, ultimo);
+            elems.set(0, ultimo);
             heapifyDown(0, ultimo.getId());
-            return ret;
+            longitud--;
+            return primero;
         }
     }
 
