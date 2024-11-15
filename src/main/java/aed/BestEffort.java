@@ -67,7 +67,6 @@ public class BestEffort {
             Traslado traslado = heapGanancia.desencolar();
             heapTimestamp.elems.remove(heapTimestamp.inds.get(traslado.getId()));
             heapTimestamp.arrayList2heap(heapTimestamp.elems);
-            heapTimestamp.longitud--;
             idsDespachados.add(traslado.id);
             despachados.add(traslado);
             actualizarPromedio(traslado);
