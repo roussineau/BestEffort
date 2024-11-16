@@ -70,6 +70,26 @@ public class Heap<T extends Identificable> {
         }
     }
 
+    public T sacarElem (int pos){
+        if (pos == 0) {
+            return desencolar();
+        } else {
+            if (pos == longitud-1){
+                T borrado = elems.remove(pos);
+                longitud--;
+                return borrado;
+            } else {
+                T elemAcambiar = elems.get(pos);
+                T ultimo = elems.remove(longitud - 1);
+                elems.set(pos, ultimo);
+                inds.set(ultimo.getId(), pos);
+                longitud--;
+                heapifyDown(pos, ultimo.getId());
+                return elemAcambiar;
+            }
+        }
+    }
+
     public void heapifyDown(int n, int id) {
         int indIzq = 2 * n + 1;
         int indDer = 2 * n + 2;
@@ -128,39 +148,31 @@ public class Heap<T extends Identificable> {
     }
 
     public void arrayList2heap(ArrayList<T> arrayList) {
-        this.elems = new ArrayList<T>(arrayList.size());
-        int j = (this.elems.size() - 2) / 2;
-        int i = hijo(j);
-        while (j >= 0) {
-            if (comparator.compare(elems.get(i), elems.get(i)) > 0) {
-                heapify(j, i);
+        this.elems = new ArrayList<>(arrayList);
+        this.longitud = elems.size();
+        if (longitud != 0){
+            for(int i = (longitud - 2) / 2; i >= 0; i--){
+                heapify(this.elems, this.longitud, i);
             }
-            j--;
-            i = hijo(j);
         }
     }
 
-    public int hijo(int j) {
-        int i;
-        if (2 * j + 2 < elems.size() && j >= 0) {
-            if (comparator.compare(elems.get(2 * j + 1), elems.get(2 * j + 2)) > 0) {
-                i = 2 * j + 1;
-            } else {
-                i = 2 * j + 2;
-            }
-        } else {
-            i = 2 * j + 1;
+    public void heapify (ArrayList<T> elems, int longitud, int i){
+        int nodoEnCuestion = i;
+        int posizq = 2*i+1;
+        int posder = 2*i+2;
+        if(posizq < longitud && (comparator.compare(elems.get(posizq), elems.get(nodoEnCuestion))>0)){
+            nodoEnCuestion = posizq;
         }
-        return i;
-    }
-
-    public void heapify(int j, int i) {
-        while (i < elems.size() && (comparator.compare(elems.get(i), elems.get(j)) > 0)) {
-            T padre = elems.get(j);
-            elems.set(j, elems.get(i));
-            elems.set(i, padre);
-            j = i;
-            i = hijo(j);
+        if(posder< longitud && (comparator.compare(elems.get(posder), elems.get(nodoEnCuestion))>0)){
+            nodoEnCuestion = posder;
+        }
+        if(nodoEnCuestion != i){
+            T nuevoValorT = elems.get(nodoEnCuestion);
+            T nodoACambiar = elems.get(i);
+            elems.set(nodoEnCuestion, nodoACambiar);
+            elems.set(i, nuevoValorT);
+            heapify(elems, longitud, nodoEnCuestion);
         }
     }
 
