@@ -100,6 +100,7 @@ public class Heap<T extends Identificable> {
                 }
             }
         } else {
+            
             if (indIzq < longitud) {
                 T izq = elems.get(indIzq);
                 int comparacion = comparator.compare(izq, padre);
