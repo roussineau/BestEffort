@@ -26,22 +26,22 @@ public class BestEffort {
         }
     }
 
-    public BestEffort(int cantCiudades, Traslado[] traslados) {
+    public BestEffort(int cantCiudades, Traslado[] traslados) {     //--> O(|C| + |T|)
         promedio = new Promedio();
         ciudades = new ArrayList<>();
-        for (int i = 0; i < cantCiudades; i++) {
+        for (int i = 0; i < cantCiudades; i++) {                    //O(|C|)
             ciudades.add(new Ciudad(i));
         }
         heapGanancia = new Heap<>(false);
         heapTimestamp = new Heap<>(true);
         heapSuperavit = new Heap<>(false);
         ArrayList<Traslado> trasList = new ArrayList<Traslado>();
-        for(int i = 0; i<traslados.length; i++) {
+        for(int i = 0; i<traslados.length; i++) {                   //O(|T|)
             trasList.add(traslados[i]);
         }
-        heapTimestamp.arrayList2heap(trasList);
-        heapGanancia.arrayList2heap(trasList);
-        heapSuperavit.arrayList2heap(ciudades);
+        heapTimestamp.arrayList2heap(trasList);                     //O(|T|)
+        heapGanancia.arrayList2heap(trasList);                      //O(|T|)
+        heapSuperavit.arrayList2heap(ciudades);                     //O(|C|)
         despachados = new ArrayList<>();
         arregloGanancias = new ArrayList<>();
         arregloPerdidas = new ArrayList<>();
@@ -49,24 +49,23 @@ public class BestEffort {
         maxPerdida = 0;
     }
 
-    public void registrarTraslados(Traslado[] traslados) {
-        for (Traslado traslado : traslados) {
-            heapTimestamp.encolar(traslado);
-            heapGanancia.encolar(traslado);
-        }
+    public void registrarTraslados(Traslado[] traslados) {         //-->O(|traslados| * log(T))
+        for (Traslado traslado : traslados) {       //O(|traslados|)
+            heapTimestamp.encolar(traslado);        //O(log(T))
+            heapGanancia.encolar(traslado);         //O(log(T))
+        }                                                  
     }
 
-    private void actualizarPromedio(Traslado t) {
+    private void actualizarPromedio(Traslado t) {                   //-->O(1)
         promedio.totalGanancia += t.gananciaNeta;
         promedio.despachados++;
         promedio.promedio = promedio.totalGanancia / promedio.despachados;
     }
 
-    private void actualizarEstadisticas(Ciudad ciudad, boolean esGanancia) {
+    private void actualizarEstadisticas(Ciudad ciudad, boolean esGanancia) { //--> O(1)
         int valor;
         ArrayList<Integer> lista;
         Integer max;
-    
         if (esGanancia) {
             valor = ciudad.ganancia;
             lista = arregloGanancias;
@@ -76,7 +75,6 @@ public class BestEffort {
             lista = arregloPerdidas;
             max = maxPerdida;
         }
-    
         if (valor > max) {
             lista.clear();
             lista.add(ciudad.id);
@@ -86,7 +84,6 @@ public class BestEffort {
                 maxPerdida = valor;
             }
         } else if (valor == max) {
-            // Reemplazar contains() con un simple ciclo
             boolean yaEsta = false;
             for (int id : lista) {
                 if (id == ciudad.id) {
@@ -99,17 +96,15 @@ public class BestEffort {
             }
         }
     }
-    public int[] despacharMasRedituables(int n) {
+    public ArrayList<Integer> despacharMasRedituables(int n) {                            //--> O(n (log|T| + log|C|))
         ArrayList<Integer> idsDespachados = new ArrayList<>();
         int cantDisponibles = Math.min(n, heapGanancia.longitud);
-        for (int i = 0; i < cantDisponibles; i++) {
-            Traslado traslado = heapGanancia.desencolar();
-            heapTimestamp.sacarElem(heapTimestamp.inds.get(traslado.getId()));
+        for (int i = 0; i < cantDisponibles; i++) {                             //O(n)
+            Traslado traslado = heapGanancia.desencolar();                      //O(log|T|)
+            heapTimestamp.sacarElem(heapTimestamp.inds.get(traslado.getId()));  //O(log|T|)
             idsDespachados.add(traslado.id);
             despachados.add(traslado);
             actualizarPromedio(traslado);
-    
-            // Actualizar ciudades
             int monto = traslado.gananciaNeta;
             Ciudad origen = heapSuperavit.elems.get(heapSuperavit.inds.get(traslado.origen));
             Ciudad destino = heapSuperavit.elems.get(heapSuperavit.inds.get(traslado.destino));
@@ -117,35 +112,24 @@ public class BestEffort {
             origen.superavit += monto;
             destino.perdida += monto;
             destino.superavit -= monto;
-    
-            heapSuperavit.actualizarPrioridad(origen, origen);
-            heapSuperavit.actualizarPrioridad(destino, destino);
-    
-            // Actualizar estadísticas
+            heapSuperavit.actualizarPrioridad(origen, origen);                  //O(log|C|)
+            heapSuperavit.actualizarPrioridad(destino, destino);                //O(log|C|)
             actualizarEstadisticas(origen, true);
             actualizarEstadisticas(destino, false);
+            heapSuperavit.heapifyDown(0, 0);                               //O(log|C|)
         }
-    
-        // Convertir idsDespachados a un arreglo de enteros
-        int[] idsSeq = new int[idsDespachados.size()];
-        for (int i = 0; i < idsDespachados.size(); i++) {
-            idsSeq[i] = idsDespachados.get(i);
-        }
-    
-        return idsSeq;
+        return idsDespachados;
     }
 
-    public int[] despacharMasAntiguos(int n) {
+    public ArrayList<Integer> despacharMasAntiguos(int n) {                             //--> O(n (log|T| + log|C|))
         ArrayList<Integer> idsDespachados = new ArrayList<>();
         int cantDisponibles = Math.min(n, heapTimestamp.longitud);
-        for (int i = 0; i < cantDisponibles; i++) {
-            Traslado traslado = heapTimestamp.desencolar();
-            heapGanancia.sacarElem(heapGanancia.inds.get(traslado.getId()));
+        for (int i = 0; i < cantDisponibles; i++) {                             //O(n)
+            Traslado traslado = heapTimestamp.desencolar();                     //O(log|T|)
+            heapGanancia.sacarElem(heapGanancia.inds.get(traslado.getId()));    //O(log|T|)
             idsDespachados.add(traslado.id);
             despachados.add(traslado);
             actualizarPromedio(traslado);
-
-            // Actualizar ciudades
             int monto = traslado.gananciaNeta;
             Ciudad origen = heapSuperavit.elems.get(heapSuperavit.inds.get(traslado.origen));
             Ciudad destino = heapSuperavit.elems.get(heapSuperavit.inds.get(traslado.destino));
@@ -153,32 +137,29 @@ public class BestEffort {
             origen.superavit += monto;
             destino.perdida += monto;
             destino.superavit -= monto;
-
-            heapSuperavit.actualizarPrioridad(origen, origen);
-            heapSuperavit.actualizarPrioridad(destino, destino);
-
-            // Actualizar estadísticas
+            heapSuperavit.actualizarPrioridad(origen, origen);                  //O(log|C|)
+            heapSuperavit.actualizarPrioridad(destino, destino);                //O(log|C|)
             actualizarEstadisticas(origen, true);
             actualizarEstadisticas(destino, false);
+            heapSuperavit.heapifyDown(0, 0);
         }
 
-        return idsDespachados.stream().mapToInt(Integer::intValue).toArray();
+        return idsDespachados;
     }
 
-    public int ciudadConMayorSuperavit() {
-        heapSuperavit.heapifyDown(0, 0);
+    public int ciudadConMayorSuperavit() {                                  //-->O(1)
         return heapSuperavit.elems.get(0).getId();
     }
 
-    public ArrayList<Integer> ciudadesConMayorGanancia() {
+    public ArrayList<Integer> ciudadesConMayorGanancia() {                  //-->O(1)
         return arregloGanancias;
     }
 
-    public ArrayList<Integer> ciudadesConMayorPerdida() {
+    public ArrayList<Integer> ciudadesConMayorPerdida() {                   //-->O(1)
         return arregloPerdidas;
     }
 
-    public int gananciaPromedioPorTraslado() {
+    public int gananciaPromedioPorTraslado() {                              //-->O(1)
         return promedio.promedio;
     }
 }
