@@ -239,4 +239,19 @@ public class BestEffortTests {
         heap.actualizarPrioridad(modificable, nuevo);  
         System.out.println(heap.toString());
     }
+
+    @Test
+    void arrayListToheap(){
+        ArrayList<Ciudad> ciudades = new ArrayList<>();
+        ciudades.add(new Ciudad(0));
+        ciudades.add(new Ciudad(1));
+        ciudades.add(new Ciudad(2));
+        ciudades.add(new Ciudad(3));
+
+        Heap<Ciudad> heap = new Heap<>(true);
+        heap.arrayList2heap(ciudades);
+        
+        System.out.println(heap.toString());
+        
+    }
 }
