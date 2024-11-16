@@ -5,193 +5,166 @@ import java.util.ArrayList;
 public class Heap<T extends Identificable> {
 
     public ArrayList<T> elems;
-    public int maxID;
-    public int longitud;
-    public ArrayList<Integer> inds;
-    public HeapComparator comparator;
+    public int longitud; // Número de elementos en el heap
+    public ArrayList<Integer> inds; // Índice por ID
+    public HeapComparator comparator; // Comparador del heap
 
+    // Constructor
     public Heap(boolean c) {
-        elems = new ArrayList<T>();
-        maxID = 0;
-        inds = new ArrayList<Integer>();
-        int i = 0;
-        while (i < maxID) {
-            inds.add(-1);
-            i++;
-        }
+        elems = new ArrayList<>();
+        inds = new ArrayList<>();
+        longitud = 0;
+        inds.add(-1);
         comparator = new HeapComparator(c);
     }
 
+    // Método para encolar un nuevo elemento
     public void encolar(T nuevo) {
-        if (maxID < nuevo.getId()) {
-            int i = 0;
-            while (i < nuevo.getId() - maxID) {
-                inds.add(-1);
-                i++;
-            }
-            maxID = nuevo.getId();
-        }
-        elems.add(nuevo);
+        // Asegurar espacio en inds para IDs más grandes
+        inds.add(-1); // Inicializa con -1
+        elems.add(nuevo); // Agregar elemento al final
         longitud++;
-        if (longitud > 1) {
-            inds.set(nuevo.getId(), longitud-1);
-            heapifyUp(longitud - 1, nuevo.getId());
-        } else {
-            inds.add(nuevo.getId());
-        }
+        inds.set(nuevo.getId(), longitud - 1); // Actualizar índice
+        heapifyUp(longitud - 1, nuevo.getId()); // Restaurar la propiedad del heap
     }
 
+    // Restaurar propiedad del heap hacia arriba
     public void heapifyUp(int n, int id) {
+        if (n == 0)
+            return; // Raíz del heap
         int indPadre = (n - 1) / 2;
         T padre = elems.get(indPadre);
         T hijo = elems.get(n);
-        int comparacion = comparator.compare(hijo, padre);
-        if (comparacion > 0) {
+        if (comparator.compare(hijo, padre) > 0) {
+            // Intercambiar padre e hijo
             elems.set(n, padre);
             elems.set(indPadre, hijo);
             inds.set(id, indPadre);
-            heapifyUp(indPadre, id);
+            inds.set(padre.getId(), n);
+            heapifyUp(indPadre, id); // Continuar hacia arriba
         }
     }
 
+    // Método para desencolar (obtener el máximo/mínimo)
     public T desencolar() {
-        if (longitud == 1) {
-            longitud--;
-            inds.set(0, -1);
-            return elems.remove(0);
-        } else {
-            T ultimo = elems.remove(longitud - 1);
-            T primero = elems.get(0);
-            elems.set(0, ultimo);
+        if (longitud == 0)
+            throw new IllegalStateException("Heap vacío");
+        T primero = elems.get(0);
+        T ultimo = elems.remove(longitud - 1); // Último elemento
+        longitud--;
+        if (longitud > 0) {
+            elems.set(0, ultimo); // Reemplazar la raíz
             inds.set(ultimo.getId(), 0);
-            longitud--;
-            heapifyDown(0, ultimo.getId());
-            return primero;
+            heapifyDown(0, ultimo.getId()); // Restaurar la propiedad del heap
         }
+        inds.set(primero.getId(), -1); // Actualizar índices
+        return primero;
     }
 
-    public T sacarElem (int pos){
-        if (pos == 0) {
-            return desencolar();
-        } else {
-            if (pos == longitud-1){
-                T borrado = elems.remove(pos);
-                longitud--;
-                return borrado;
-            } else {
-                T elemAcambiar = elems.get(pos);
-                T ultimo = elems.remove(longitud - 1);
-                elems.set(pos, ultimo);
-                inds.set(ultimo.getId(), pos);
-                longitud--;
-                heapifyDown(pos, ultimo.getId());
-                return elemAcambiar;
-            }
-        }
-    }
-
+    // Restaurar propiedad del heap hacia abajo
     public void heapifyDown(int n, int id) {
         int indIzq = 2 * n + 1;
         int indDer = 2 * n + 2;
-        T padre = elems.get(n);
-        if (indDer < longitud) { // Hay dos hijos
-            T izq = elems.get(indIzq);
-            T der = elems.get(indDer);
-            int comparacionHijos = comparator.compare(izq, der);
-            if (comparacionHijos > 0) {
-                int comparacion = comparator.compare(izq, padre);
-                if (comparacion > 0) {
-                    elems.set(indIzq, padre);
-                    elems.set(n, izq);
-                    inds.set(padre.getId(), indIzq);
-                    inds.set(izq.getId(), n);
-                    heapifyDown(indIzq, izq.getId());
-                }
-            } else {
-                if (comparacionHijos < 0) {
-                    int comparacion = comparator.compare(der, padre);
-                    if (comparacion > 0) {
-                        elems.set(indDer, padre);
-                        elems.set(n, der);
-                        inds.set(padre.getId(), indDer);
-                        inds.set(der.getId(), n);
-                        heapifyDown(indDer, der.getId());
-                    }
-                }
-            }
-        } else {
-            
-            if (indIzq < longitud) {
-                T izq = elems.get(indIzq);
-                int comparacion = comparator.compare(izq, padre);
-                if (comparacion > 0) {
-                    elems.set(indIzq, padre);
-                    elems.set(n, izq);
-                    inds.set(padre.getId(), indIzq);
-                    inds.set(izq.getId(), n);
-                    heapifyDown(indIzq, izq.getId());
-                }
-            }
+        int mayor = n; // Suponer que el nodo actual es el mayor
+        if (indIzq < longitud && comparator.compare(elems.get(indIzq), elems.get(mayor)) > 0) {
+            mayor = indIzq;
+        }
+        if (indDer < longitud && comparator.compare(elems.get(indDer), elems.get(mayor)) > 0) {
+            mayor = indDer;
+        }
+        if (mayor != n) {
+            T tmp = elems.get(n);
+            elems.set(n, elems.get(mayor));
+            elems.set(mayor, tmp);
+            inds.set(elems.get(n).getId(), n);
+            inds.set(elems.get(mayor).getId(), mayor);
+            heapifyDown(mayor, id);
         }
     }
 
-    public void actualizarPrioridad(T elem, T newElem) {
-        elems.set(inds.get(elem.getId()), newElem);
-        heapifyUp(inds.get(elem.getId()), elem.getId());
-        heapifyDown(inds.get(elem.getId()), elem.getId());
+    // Método para sacar un elemento en cualquier posición
+    public T sacarElem(int pos) {
+        if (pos >= longitud)
+            throw new IndexOutOfBoundsException("Posición inválida");
+        if (pos == longitud - 1) { // Último elemento
+            longitud--;
+            return elems.remove(pos);
+        }
+        T eliminado = elems.get(pos);
+        T ultimo = elems.remove(longitud - 1); // Último elemento
+        longitud--;
+        elems.set(pos, ultimo);
+        inds.set(ultimo.getId(), pos);
+        heapifyDown(pos, ultimo.getId());
+        heapifyUp(pos, ultimo.getId());
+        inds.set(eliminado.getId(), -1); // Eliminar referencia
+        return eliminado;
     }
 
+    // Actualizar prioridad de un elemento
+    public void actualizarPrioridad(T elem, T newElem) {
+        int index = inds.get(elem.getId());
+        elems.set(index, newElem);
+        if (comparator.compare(newElem, elem) > 0) {
+            heapifyUp(index, newElem.getId());
+        } else {
+            heapifyDown(index, newElem.getId());
+        }
+    }
+
+    // Convertir un arreglo en heap
     public void array2heap(T[] array) {
         for (T elem : array) {
             encolar(elem);
         }
     }
 
+    // Convertir un ArrayList en heap
     public void arrayList2heap(ArrayList<T> arrayList) {
-        this.elems = new ArrayList<>(arrayList);
-        this.longitud = elems.size();
-        if (longitud != 0){
-            for(int i = (longitud - 2) / 2; i >= 0; i--){
-                heapify(this.elems, this.longitud, i);
-            }
+        elems = new ArrayList<>(arrayList);
+        longitud = elems.size();
+        inds = new ArrayList<>();
+        inds.add(-1);
+        for (int i = 0; i < longitud; i++) {
+            inds.add(-1);
         }
+        for (int i = (longitud - 2) / 2; i >= 0; i--) {
+            heapify(elems, longitud, i);
+        }
+        for (int i = 0; i < elems.size(); i++) {
+            inds.set(elems.get(i).getId(), i);
+        }
+        
     }
 
-    public void heapify (ArrayList<T> elems, int longitud, int i){
-        int nodoEnCuestion = i;
-        int posizq = 2*i+1;
-        int posder = 2*i+2;
-        if(posizq < longitud && (comparator.compare(elems.get(posizq), elems.get(nodoEnCuestion))>0)){
-            nodoEnCuestion = posizq;
+    // Método auxiliar para heapify en arrayList2heap
+    private void heapify(ArrayList<T> elems, int longitud, int i) {
+        int mayor = i;
+        int izq = 2 * i + 1;
+        int der = 2 * i + 2;
+        if (izq < longitud && comparator.compare(elems.get(izq), elems.get(mayor)) > 0) {
+            mayor = izq;
         }
-        if(posder< longitud && (comparator.compare(elems.get(posder), elems.get(nodoEnCuestion))>0)){
-            nodoEnCuestion = posder;
+        if (der < longitud && comparator.compare(elems.get(der), elems.get(mayor)) > 0) {
+            mayor = der;
         }
-        if(nodoEnCuestion != i){
-            T nuevoValorT = elems.get(nodoEnCuestion);
-            T nodoACambiar = elems.get(i);
-            elems.set(nodoEnCuestion, nodoACambiar);
-            elems.set(i, nuevoValorT);
-            heapify(elems, longitud, nodoEnCuestion);
+        if (mayor != i) {
+            T temp = elems.get(i);
+            elems.set(i, elems.get(mayor));
+            elems.set(mayor, temp);
+            heapify(elems, longitud, mayor);
         }
-    }
-
-    public T getElementById(int id) {
-        return elems.get(inds.get(id));
     }
 
     public String toString() {
-        String ret = "[";
-        int i = 0;
-        while (i < longitud) {
-            ret += elems.get(i).getId();
+        StringBuilder ret = new StringBuilder("[");
+        for (int i = 0; i < longitud; i++) {
+            ret.append(elems.get(i).getId());
             if (i + 1 != longitud) {
-                ret += ", ";
+                ret.append(", ");
             }
-            i++;
         }
-        ret += "]";
-        return ret;
+        ret.append("]");
+        return ret.toString();
     }
-
 }
