@@ -70,6 +70,26 @@ public class Heap<T extends Identificable> {
         }
     }
 
+    public T sacarElem (int pos){
+        if (pos == 0) {
+            return desencolar();
+        } else {
+            if (pos == longitud-1){
+                T borrado = elems.remove(pos);
+                longitud--;
+                return borrado;
+            } else {
+                T elemAcambiar = elems.get(pos);
+                T ultimo = elems.remove(longitud - 1);
+                elems.set(pos, ultimo);
+                inds.set(ultimo.getId(), pos);
+                longitud--;
+                heapifyDown(pos, ultimo.getId());
+                return elemAcambiar;
+            }
+        }
+    }
+
     public void heapifyDown(int n, int id) {
         int indIzq = 2 * n + 1;
         int indDer = 2 * n + 2;
@@ -144,7 +164,7 @@ public class Heap<T extends Identificable> {
             nodoEnCuestion = posizq;
         }
         if(posder< longitud && (comparator.compare(elems.get(posder), elems.get(nodoEnCuestion))>0)){
-            nodoEnCuestion = posizq;
+            nodoEnCuestion = posder;
         }
         if(nodoEnCuestion != i){
             T nuevoValorT = elems.get(nodoEnCuestion);
