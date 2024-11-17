@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class BestEffort {
     private Promedio promedio;
     private ArrayList<Ciudad> ciudades;
-    public Heap<Traslado> heapTimestamp;
-    public Heap<Traslado> heapGanancia;
+    private Heap<Traslado> heapTimestamp;
+    private Heap<Traslado> heapGanancia;
     private Heap<Ciudad> heapSuperavit;
     private ArrayList<Traslado> despachados;
     private Integer maxGanancia;

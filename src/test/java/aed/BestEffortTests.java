@@ -222,7 +222,6 @@ public class BestEffortTests {
         // Registrar traslados
         sis.registrarTraslados(nuevos);
 
-
         // Despachar los 3 mas antiguos
         sis.despacharMasAntiguos(3);
         assertSetEquals(new ArrayList<>(Arrays.asList(2)), sis.ciudadesConMayorGanancia());
