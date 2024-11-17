@@ -237,6 +237,7 @@ void megaTest() {
     assertEquals(146250, sis.gananciaPromedioPorTraslado());
     
     // La ciudad con mayor sueravit
+    System.out.println(sis.heapSuperavit.toString());
     assertEquals(5, sis.ciudadConMayorSuperavit());
 
 }

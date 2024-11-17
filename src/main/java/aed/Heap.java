@@ -5,9 +5,9 @@ import java.util.ArrayList;
 public class Heap<T extends Identificable> {
 
     public ArrayList<T> elems;
-    public int longitud; 
-    public ArrayList<Integer> inds; 
-    public HeapComparator comparator; 
+    public int longitud;
+    public ArrayList<Integer> inds;
+    public HeapComparator comparator;
 
     public Heap(boolean c) {
         elems = new ArrayList<>();
@@ -18,16 +18,16 @@ public class Heap<T extends Identificable> {
     }
 
     public void encolar(T nuevo) {
-        inds.add(-1); 
-        elems.add(nuevo); 
+        inds.add(-1);
+        elems.add(nuevo);
         longitud++;
-        inds.set(nuevo.getId(), longitud - 1); 
-        heapifyUp(longitud - 1, nuevo.getId()); 
+        inds.set(nuevo.getId(), longitud - 1);
+        heapifyUp(longitud - 1, nuevo.getId());
     }
 
     public void heapifyUp(int n, int id) {
         if (n == 0)
-            return; 
+            return;
         int indPadre = (n - 1) / 2;
         T padre = elems.get(indPadre);
         T hijo = elems.get(n);
@@ -36,7 +36,7 @@ public class Heap<T extends Identificable> {
             elems.set(indPadre, hijo);
             inds.set(id, indPadre);
             inds.set(padre.getId(), n);
-            heapifyUp(indPadre, id); 
+            heapifyUp(indPadre, id);
         }
     }
 
@@ -44,21 +44,21 @@ public class Heap<T extends Identificable> {
         if (longitud == 0)
             throw new IllegalStateException("Heap vacío");
         T primero = elems.get(0);
-        T ultimo = elems.remove(longitud - 1); 
+        T ultimo = elems.remove(longitud - 1);
         longitud--;
         if (longitud > 0) {
-            elems.set(0, ultimo); 
+            elems.set(0, ultimo);
             inds.set(ultimo.getId(), 0);
-            heapifyDown(0, ultimo.getId()); 
+            heapifyDown(0, ultimo.getId());
         }
-        inds.set(primero.getId(), -1); 
+        inds.set(primero.getId(), -1);
         return primero;
     }
 
     public void heapifyDown(int n, int id) {
         int indIzq = 2 * n + 1;
         int indDer = 2 * n + 2;
-        int mayor = n; 
+        int mayor = n;
         if (indIzq < longitud && comparator.compare(elems.get(indIzq), elems.get(mayor)) > 0) {
             mayor = indIzq;
         }
@@ -78,29 +78,26 @@ public class Heap<T extends Identificable> {
     public T sacarElem(int pos) {
         if (pos >= longitud)
             throw new IndexOutOfBoundsException("Posición inválida");
-        if (pos == longitud - 1) { 
+        if (pos == longitud - 1) {
             longitud--;
             return elems.remove(pos);
         }
         T eliminado = elems.get(pos);
-        T ultimo = elems.remove(longitud - 1); 
+        T ultimo = elems.remove(longitud - 1);
         longitud--;
         elems.set(pos, ultimo);
         inds.set(ultimo.getId(), pos);
         heapifyDown(pos, ultimo.getId());
         heapifyUp(pos, ultimo.getId());
-        inds.set(eliminado.getId(), -1); 
+        inds.set(eliminado.getId(), -1);
         return eliminado;
     }
 
     public void actualizarPrioridad(T elem, T newElem) {
         int index = inds.get(elem.getId());
         elems.set(index, newElem);
-        if (comparator.compare(newElem, elem) > 0) {
-            heapifyUp(index, newElem.getId());
-        } else {
-            heapifyDown(index, newElem.getId());
-        }
+        heapifyUp(index, newElem.getId());
+        heapifyDown(index, newElem.getId());
     }
 
     public void array2heap(T[] array) {
@@ -123,7 +120,7 @@ public class Heap<T extends Identificable> {
         for (int i = 0; i < elems.size(); i++) {
             inds.set(elems.get(i).getId(), i);
         }
-        
+
     }
 
     private void heapify(ArrayList<T> elems, int longitud, int i) {
