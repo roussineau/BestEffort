@@ -100,12 +100,6 @@ public class Heap<T extends Identificable> {
         heapifyDown(index, newElem.getId());
     }
 
-    public void array2heap(T[] array) {
-        for (T elem : array) {
-            encolar(elem);
-        }
-    }
-
     public void arrayList2heap(ArrayList<T> arrayList) {
         elems = new ArrayList<>(arrayList);
         longitud = elems.size();
