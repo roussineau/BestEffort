@@ -5,11 +5,10 @@ import java.util.ArrayList;
 public class Heap<T extends Identificable> {
 
     public ArrayList<T> elems;
-    public int longitud; // Número de elementos en el heap
-    public ArrayList<Integer> inds; // Índice por ID
-    public HeapComparator comparator; // Comparador del heap
+    public int longitud; 
+    public ArrayList<Integer> inds; 
+    public HeapComparator comparator; 
 
-    // Constructor
     public Heap(boolean c) {
         elems = new ArrayList<>();
         inds = new ArrayList<>();
@@ -18,54 +17,48 @@ public class Heap<T extends Identificable> {
         comparator = new HeapComparator(c);
     }
 
-    // Método para encolar un nuevo elemento
     public void encolar(T nuevo) {
-        // Asegurar espacio en inds para IDs más grandes
-        inds.add(-1); // Inicializa con -1
-        elems.add(nuevo); // Agregar elemento al final
+        inds.add(-1); 
+        elems.add(nuevo); 
         longitud++;
-        inds.set(nuevo.getId(), longitud - 1); // Actualizar índice
-        heapifyUp(longitud - 1, nuevo.getId()); // Restaurar la propiedad del heap
+        inds.set(nuevo.getId(), longitud - 1); 
+        heapifyUp(longitud - 1, nuevo.getId()); 
     }
 
-    // Restaurar propiedad del heap hacia arriba
     public void heapifyUp(int n, int id) {
         if (n == 0)
-            return; // Raíz del heap
+            return; 
         int indPadre = (n - 1) / 2;
         T padre = elems.get(indPadre);
         T hijo = elems.get(n);
         if (comparator.compare(hijo, padre) > 0) {
-            // Intercambiar padre e hijo
             elems.set(n, padre);
             elems.set(indPadre, hijo);
             inds.set(id, indPadre);
             inds.set(padre.getId(), n);
-            heapifyUp(indPadre, id); // Continuar hacia arriba
+            heapifyUp(indPadre, id); 
         }
     }
 
-    // Método para desencolar (obtener el máximo/mínimo)
     public T desencolar() {
         if (longitud == 0)
             throw new IllegalStateException("Heap vacío");
         T primero = elems.get(0);
-        T ultimo = elems.remove(longitud - 1); // Último elemento
+        T ultimo = elems.remove(longitud - 1); 
         longitud--;
         if (longitud > 0) {
-            elems.set(0, ultimo); // Reemplazar la raíz
+            elems.set(0, ultimo); 
             inds.set(ultimo.getId(), 0);
-            heapifyDown(0, ultimo.getId()); // Restaurar la propiedad del heap
+            heapifyDown(0, ultimo.getId()); 
         }
-        inds.set(primero.getId(), -1); // Actualizar índices
+        inds.set(primero.getId(), -1); 
         return primero;
     }
 
-    // Restaurar propiedad del heap hacia abajo
     public void heapifyDown(int n, int id) {
         int indIzq = 2 * n + 1;
         int indDer = 2 * n + 2;
-        int mayor = n; // Suponer que el nodo actual es el mayor
+        int mayor = n; 
         if (indIzq < longitud && comparator.compare(elems.get(indIzq), elems.get(mayor)) > 0) {
             mayor = indIzq;
         }
@@ -82,26 +75,24 @@ public class Heap<T extends Identificable> {
         }
     }
 
-    // Método para sacar un elemento en cualquier posición
     public T sacarElem(int pos) {
         if (pos >= longitud)
             throw new IndexOutOfBoundsException("Posición inválida");
-        if (pos == longitud - 1) { // Último elemento
+        if (pos == longitud - 1) { 
             longitud--;
             return elems.remove(pos);
         }
         T eliminado = elems.get(pos);
-        T ultimo = elems.remove(longitud - 1); // Último elemento
+        T ultimo = elems.remove(longitud - 1); 
         longitud--;
         elems.set(pos, ultimo);
         inds.set(ultimo.getId(), pos);
         heapifyDown(pos, ultimo.getId());
         heapifyUp(pos, ultimo.getId());
-        inds.set(eliminado.getId(), -1); // Eliminar referencia
+        inds.set(eliminado.getId(), -1); 
         return eliminado;
     }
 
-    // Actualizar prioridad de un elemento
     public void actualizarPrioridad(T elem, T newElem) {
         int index = inds.get(elem.getId());
         elems.set(index, newElem);
@@ -112,14 +103,12 @@ public class Heap<T extends Identificable> {
         }
     }
 
-    // Convertir un arreglo en heap
     public void array2heap(T[] array) {
         for (T elem : array) {
             encolar(elem);
         }
     }
 
-    // Convertir un ArrayList en heap
     public void arrayList2heap(ArrayList<T> arrayList) {
         elems = new ArrayList<>(arrayList);
         longitud = elems.size();
@@ -137,7 +126,6 @@ public class Heap<T extends Identificable> {
         
     }
 
-    // Método auxiliar para heapify en arrayList2heap
     private void heapify(ArrayList<T> elems, int longitud, int i) {
         int mayor = i;
         int izq = 2 * i + 1;
