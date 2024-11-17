@@ -13,7 +13,7 @@ public class HeapComparator implements Comparator<Object> {
     public int compare(Object o1, Object o2) {
         if (atributo) {
             if (o1 instanceof Traslado && o2 instanceof Traslado) {   //--> para hacer una clase Heap genérica que funcione tanto para maxHeap como min Heap devolvemos el valor contrario al maxHeap comparator
-                Traslado t1 = (Traslado) o1;   
+                Traslado t1 = (Traslado) o1;   // Despúes de revisar que la instancia es la misma; reaseguro que trate mi variable como tal clase (si no, no funciona el comparador para clases distintas)
                 Traslado t2 = (Traslado) o2;
                 return -Integer.compare(t1.timestamp(), t2.timestamp());
             }

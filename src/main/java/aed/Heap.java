@@ -41,8 +41,6 @@ public class Heap<T extends Identificable> {
     }
 
     public T desencolar() {
-        if (longitud == 0)
-            throw new IllegalStateException("Heap vacío");
         T primero = elems.get(0);
         T ultimo = elems.remove(longitud - 1);
         longitud--;

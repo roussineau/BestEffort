@@ -220,23 +220,18 @@ public class BestEffortTests {
                 new Traslado(19, 4, 2, 90000, 60)
         };
 
-        // Registrar traslados
         sis.registrarTraslados(nuevos);
 
-        // Despachar los 3 más antiguos
         sis.despacharMasAntiguos(3);
         assertEquals(new ArrayList<>(Arrays.asList(2, 1)), sis.ciudadesConMayorGanancia());
         assertEquals(new ArrayList<>(Arrays.asList(1, 6)), sis.ciudadesConMayorPerdida());
 
-        // Despachar los 5 más redituables
         sis.despacharMasRedituables(5);
         assertEquals(new ArrayList<>(Arrays.asList(3)), sis.ciudadesConMayorGanancia());
         assertEquals(new ArrayList<>(Arrays.asList(4)), sis.ciudadesConMayorPerdida());
 
-        // Obtener promedio
         assertEquals(146250, sis.gananciaPromedioPorTraslado());
 
-        // La ciudad con mayor superavit
         assertEquals(5, sis.ciudadConMayorSuperavit());
 
     }
