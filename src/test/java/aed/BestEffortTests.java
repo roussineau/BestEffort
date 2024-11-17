@@ -202,7 +202,7 @@ public class BestEffortTests {
     ////////////////////
 
     @Test
-void megaTest() {
+    void megaTest() {
     BestEffort sis = new BestEffort(this.cantCiudades, this.listaTraslados);
 
     Traslado[] nuevos = new Traslado[] {
@@ -240,6 +240,69 @@ void megaTest() {
     System.out.println(sis.heapSuperavit.toString());
     assertEquals(5, sis.ciudadConMayorSuperavit());
 
-}
+    }
 
-}
+@Test
+void heapTest (){
+    Heap<Traslado> traslados = new Heap<>(false);
+    Traslado traslado_1 = new Traslado(1, 3, 4, 42, 7);
+    Traslado traslado_2 = new Traslado(2, 6, 5, 6, 6);
+    Traslado traslado_3 = new Traslado(3, 5, 6, 7, 5);
+    Traslado traslado_4 = new Traslado(4, 2, 1, 203, 4);
+    Traslado traslado_5 = new Traslado(5, 3, 4, 84, 3);
+    Traslado traslado_6 =new Traslado(6, 1, 2, 117, 2);
+    Traslado traslado_7 =new Traslado(7, 2, 1, 29, 1);
+
+    traslados.encolar(traslado_1);
+    traslados.encolar(traslado_2);
+    traslados.encolar(traslado_3);
+    traslados.encolar(traslado_4);
+    traslados.encolar(traslado_5);
+    traslados.encolar(traslado_6);
+    traslados.encolar(traslado_7);
+
+    assertEquals(new ArrayList<>(Arrays.asList(traslado_4, traslado_5, traslado_6, traslado_2, traslado_1, traslado_3,traslado_7)), traslados.elems);
+    assertEquals( 7, traslados.longitud);
+    assertEquals(new ArrayList<>(Arrays.asList(-1,4,3,5,0,1,2,6)), traslados.inds); // El primer indice es -1 por que no hay ningún traslado con ID 0
+
+    traslados.desencolar();
+
+    assertEquals(new ArrayList<>(Arrays.asList(traslado_6, traslado_5, traslado_7, traslado_2, traslado_1, traslado_3)), traslados.elems);
+    assertEquals( 6, traslados.longitud);
+    assertEquals(new ArrayList<>(Arrays.asList(-1,4,3,5,-1,1,0,2)), traslados.inds);
+
+    traslados.sacarElem(3);
+
+    assertEquals(new ArrayList<>(Arrays.asList(traslado_6, traslado_5, traslado_7, traslado_3, traslado_1)), traslados.elems);
+    assertEquals( 5, traslados.longitud);
+    assertEquals(new ArrayList<>(Arrays.asList(-1,4,-1,3,-1,1,0,2)), traslados.inds);
+    }
+
+    @Test
+    void heapComparatorTest (){
+        Ciudad ciudad_1 = new Ciudad(1);
+        Ciudad ciudad_0 = new Ciudad(0);
+
+        ciudad_0.ganancia = 300;
+        ciudad_0.perdida = 423;
+        ciudad_0.superavit = 300-423;
+
+        ciudad_1.ganancia = 50;
+        ciudad_1.perdida = 33;
+        ciudad_1.superavit = 50-33;
+
+        HeapComparator comparador_0 = new HeapComparator(false);
+
+        assertEquals(true, comparador_0.compare(ciudad_0, ciudad_1) <0);
+
+        Traslado traslado_0 = new Traslado(19, 4, 2, 90000, 60);
+        Traslado traslado_1 = new Traslado(5, 3, 4, 84, 3);
+
+        assertEquals(true, comparador_0.compare(traslado_0, traslado_1)>0);
+
+        HeapComparator comparador_1 = new HeapComparator(true);
+
+        assertEquals(true, comparador_1.compare(traslado_0, traslado_1)<0);
+
+    }
+}   
