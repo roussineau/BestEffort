@@ -7,7 +7,7 @@ public class BestEffort {
     private ArrayList<Ciudad> ciudades;
     private Heap<Traslado> heapTimestamp;
     private Heap<Traslado> heapGanancia;
-    public Heap<Ciudad> heapSuperavit;
+    private Heap<Ciudad> heapSuperavit;
     private ArrayList<Traslado> despachados;
     private Integer maxGanancia;
     private Integer maxPerdida;
