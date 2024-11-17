@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class BestEffort {
     private Promedio promedio;
     private ArrayList<Ciudad> ciudades;
-    private Heap<Traslado> heapTimestamp;
-    private Heap<Traslado> heapGanancia;
+    public Heap<Traslado> heapTimestamp;
+    public Heap<Traslado> heapGanancia;
     private Heap<Ciudad> heapSuperavit;
     private ArrayList<Traslado> despachados;
     private Integer maxGanancia;
@@ -36,7 +36,7 @@ public class BestEffort {
         heapTimestamp = new Heap<>(true);
         heapSuperavit = new Heap<>(false);
         ArrayList<Traslado> trasList = new ArrayList<Traslado>();
-        for(int i = 0; i<traslados.length; i++) {
+        for (int i = 0; i < traslados.length; i++) {
             trasList.add(traslados[i]);
         }
         heapTimestamp.arrayList2heap(trasList);
@@ -66,7 +66,7 @@ public class BestEffort {
         int valor;
         ArrayList<Integer> lista;
         Integer max;
-    
+
         if (esGanancia) {
             valor = ciudad.ganancia;
             lista = arregloGanancias;
@@ -76,7 +76,7 @@ public class BestEffort {
             lista = arregloPerdidas;
             max = maxPerdida;
         }
-    
+
         if (valor > max) {
             lista.clear();
             lista.add(ciudad.id);
@@ -99,7 +99,8 @@ public class BestEffort {
             }
         }
     }
-    public int[] despacharMasRedituables(int n) {
+
+    public ArrayList<Integer> despacharMasRedituables(int n) {
         ArrayList<Integer> idsDespachados = new ArrayList<>();
         int cantDisponibles = Math.min(n, heapGanancia.longitud);
         for (int i = 0; i < cantDisponibles; i++) {
@@ -108,7 +109,7 @@ public class BestEffort {
             idsDespachados.add(traslado.id);
             despachados.add(traslado);
             actualizarPromedio(traslado);
-    
+
             // Actualizar ciudades
             int monto = traslado.gananciaNeta;
             Ciudad origen = heapSuperavit.elems.get(heapSuperavit.inds.get(traslado.origen));
@@ -117,25 +118,21 @@ public class BestEffort {
             origen.superavit += monto;
             destino.perdida += monto;
             destino.superavit -= monto;
-    
+
             heapSuperavit.actualizarPrioridad(origen, origen);
             heapSuperavit.actualizarPrioridad(destino, destino);
-    
+
             // Actualizar estadísticas
             actualizarEstadisticas(origen, true);
             actualizarEstadisticas(destino, false);
         }
-    
-        // Convertir idsDespachados a un arreglo de enteros
-        int[] idsSeq = new int[idsDespachados.size()];
-        for (int i = 0; i < idsDespachados.size(); i++) {
-            idsSeq[i] = idsDespachados.get(i);
-        }
-    
-        return idsSeq;
+        heapSuperavit.heapifyDown(0, 0);
+
+
+        return idsDespachados;
     }
 
-    public int[] despacharMasAntiguos(int n) {
+    public ArrayList<Integer> despacharMasAntiguos(int n) {
         ArrayList<Integer> idsDespachados = new ArrayList<>();
         int cantDisponibles = Math.min(n, heapTimestamp.longitud);
         for (int i = 0; i < cantDisponibles; i++) {
@@ -161,12 +158,11 @@ public class BestEffort {
             actualizarEstadisticas(origen, true);
             actualizarEstadisticas(destino, false);
         }
-
-        return idsDespachados.stream().mapToInt(Integer::intValue).toArray();
+        heapSuperavit.heapifyDown(0, 0);
+        return idsDespachados;
     }
 
     public int ciudadConMayorSuperavit() {
-        heapSuperavit.heapifyDown(0, 0);
         return heapSuperavit.elems.get(0).getId();
     }
 
