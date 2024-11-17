@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -196,5 +197,48 @@ public class BestEffortTests {
 
     }
 
-  
+    ////////////////////
+    // NUESTROS TESTS //
+    ////////////////////
+
+    @Test
+void megaTest() {
+    BestEffort sis = new BestEffort(this.cantCiudades, this.listaTraslados);
+
+    Traslado[] nuevos = new Traslado[] {
+            new Traslado(8, 0, 1, 10001, 5),
+            new Traslado(9, 6, 2, 40000, 2),
+            new Traslado(10, 2, 1, 50000, 3),
+            new Traslado(11, 1, 6, 50000, 4),
+            new Traslado(12, 5, 3, 150000, 9),
+            new Traslado(13, 3, 0, 50000, 45),
+            new Traslado(14, 3, 4, 410000, 21),
+            new Traslado(15, 4, 6, 400, 17),
+            new Traslado(16, 1, 0, 17000, 11),
+            new Traslado(17, 5, 1, 130000, 13),
+            new Traslado(18, 0, 6, 250000, 78),
+            new Traslado(19, 4, 2, 90000, 60)
+    };
+
+    // Registrar traslados
+    sis.registrarTraslados(nuevos);
+
+    // Despachar los 3 más antiguos
+    sis.despacharMasAntiguos(3);
+    assertEquals(new ArrayList<>(Arrays.asList(2, 1)), sis.ciudadesConMayorGanancia());
+    assertEquals(new ArrayList<>(Arrays.asList(1, 6)), sis.ciudadesConMayorPerdida());
+
+    // Despachar los 5 más redituables
+    sis.despacharMasRedituables(5);
+    assertEquals(new ArrayList<>(Arrays.asList(3)), sis.ciudadesConMayorGanancia());
+    assertEquals(new ArrayList<>(Arrays.asList(4)), sis.ciudadesConMayorPerdida());
+
+    // Obtener promedio
+    assertEquals(146250, sis.gananciaPromedioPorTraslado());
+    
+    // La ciudad con mayor sueravit
+    assertEquals(5, sis.ciudadConMayorSuperavit());
+
+}
+
 }
